@@ -1,10 +1,10 @@
 import prisma from '../../config/prismaClient';
 import { Module } from '../../domain/entities/Module';
-import { IFindModuleById } from '../../domain/usecases/Module/findById';
+import { IFindModuleByIdRepository } from '../interfaces/IFindByIdRepository';
 
-class FindModuleById implements IFindModuleById {
-  async findById(id: string): Promise<Module> {
-    return prisma.module.findFirstOrThrow({ where: { id } });
+class FindModuleById implements IFindModuleByIdRepository {
+  async findById(id: string): Promise<Module | null> {
+    return prisma.module.findFirst({ where: { id } });
   }
 }
 
