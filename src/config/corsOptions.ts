@@ -1,5 +1,5 @@
 export default {
-  origin:'http://localhost:3000',
-  credentials:true,
-  optionSuccessStatus: 200
-}
+  origin: 'http://localhost:3000',
+  credentials: true,
+  optionSuccessStatus: 200,
+};
