@@ -1,8 +1,12 @@
 import express, { Request, Response, Express } from 'express';
+
 import cors from 'cors';
 import morgan from 'morgan';
 
 import corsOptions from './config/corsOptions';
+import globalExceptionHandler from './exceptions/GlobalExceptionHandler';
+
+require('express-async-errors');
 
 class App {
   app: Express;
@@ -31,6 +35,7 @@ class App {
     this.app = express();
     this.middlewares();
     this.routes();
+    this.app.use(globalExceptionHandler);
   }
 }
 
