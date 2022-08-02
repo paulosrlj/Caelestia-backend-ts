@@ -1,11 +1,11 @@
 import prisma from '../../config/prismaClient';
 import { Module } from '../../domain/entities/Module';
 import {
-  IUpdateModule,
+  IUpdateModuleRepository,
   UpdateModuleModel,
-} from '../../domain/usecases/Module/update';
+} from '../interfaces/IUpdateModuleRepository';
 
-class UpdateModule implements IUpdateModule {
+class UpdateModule implements IUpdateModuleRepository {
   update(id: string, module: UpdateModuleModel): Promise<Module> {
     return prisma.module.update({ data: module, where: { id } });
   }
