@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import prisma from '../../config/prismaClient';
 import { Module } from '../../domain/entities/Module';
 import {
