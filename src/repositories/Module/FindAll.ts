@@ -1,8 +1,8 @@
 import prisma from '../../config/prismaClient';
 import { Module } from '../../domain/entities';
-import { IFindAllModule } from '../../domain/usecases/Module/findAll';
+import { IFindAllModuleRepository } from '../interfaces/IFindAllModuleRepository';
 
-class FindAll implements IFindAllModule {
+class FindAll implements IFindAllModuleRepository {
   findAll(): Promise<Module[]> {
     return prisma.module.findMany();
   }
