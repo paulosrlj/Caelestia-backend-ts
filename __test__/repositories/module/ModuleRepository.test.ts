@@ -1,9 +1,11 @@
 import { NotFoundError } from '@prisma/client/runtime';
 import prisma from '../../../src/config/prismaClient';
+
 import CreateModule from '../../../src/repositories/Module/CreateModule';
 import FindModuleById from '../../../src/repositories/Module/FindModuleById';
 import DeleteModule from '../../../src/repositories/Module/DeleteModule';
 import FindAll from '../../../src/repositories/Module/FindAll';
+import UpdateModule from '../../../src/repositories/Module/UpdateModule';
 
 describe('Module respository integration tests', () => {
   beforeAll(async () => {
@@ -81,5 +83,25 @@ describe('Module respository integration tests', () => {
         updatedAt: expect.any(Date),
       }),
     );
+  });
+
+  test('Should update a module name', async () => {
+    const sut = new UpdateModule();
+
+    const moduleToPersist = { name: 'Módulo para persistir' };
+    const persistedModule = await prisma.module.create({
+      data: moduleToPersist,
+    });
+
+    const dataToUpdate = { name: 'Módulo com nome atualizado' };
+
+    const updatedModule = await sut.update(persistedModule.id, dataToUpdate);
+
+    expect(updatedModule).toEqual({
+      id: expect.any(String),
+      name: 'dataToUpdate.name',
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+    });
   });
 });
