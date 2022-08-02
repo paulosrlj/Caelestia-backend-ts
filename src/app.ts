@@ -14,9 +14,8 @@ class App {
       return res.json({ ok: 'ok' });
     });
 
-    this.app.post('/', (req: Request, res: Response) => {
+    this.app.post('/', async (req: Request, res: Response) => {
       console.log(req.body);
-
       return res.json({ ok: 'ok' });
     });
   }
