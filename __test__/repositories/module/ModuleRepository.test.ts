@@ -1,6 +1,8 @@
+import { NotFoundError } from '@prisma/client/runtime';
 import prisma from '../../../src/config/prismaClient';
 import CreateModule from '../../../src/repositories/Module/CreateModule';
 import FindModuleById from '../../../src/repositories/Module/FindModuleById';
+import DeleteModule from '../../../src/repositories/Module/DeleteModule';
 
 describe('Module respository integration tests', () => {
   beforeAll(async () => {
@@ -26,15 +28,34 @@ describe('Module respository integration tests', () => {
   });
 
   test('Should find a module by id', async () => {
-    const createModule = new CreateModule();
     const sut = new FindModuleById();
 
     const moduleToPersist = { name: 'Módulo para persistir' };
 
-    const persistedModule = await createModule.create(moduleToPersist);
+    const persistedModule = await prisma.module.create({
+      data: moduleToPersist,
+    });
 
     const moduleFound = await sut.findById(persistedModule.id);
 
     expect(moduleFound).toEqual(persistedModule);
+  });
+
+  test('Should throw NotFoundError after delete a module by id', async () => {
+    const sut = new DeleteModule();
+
+    const moduleToPersist = { name: 'Módulo para persistir' };
+
+    const persistedModule = await prisma.module.create({
+      data: moduleToPersist,
+    });
+
+    await sut.delete(persistedModule.id);
+
+    expect(async () => {
+      await prisma.module.findFirstOrThrow({
+        where: { id: persistedModule.id },
+      });
+    }).rejects.toBeInstanceOf(NotFoundError);
   });
 });
