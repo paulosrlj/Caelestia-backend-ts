@@ -1,8 +1,7 @@
-import { Module } from '../../src/domain/entities';
-import { CreateModuleModel } from '../../src/domain/usecases/Module/create';
-import { ICreateModuleRepository } from '../../src/repositories/interfaces/ICreateModuleRepository';
+import { Module } from '../../../src/domain/entities';
+import { ICreateModuleRepository } from '../../../src/repositories/interfaces/ICreateModuleRepository';
 
-import CreateModuleService from '../../src/services/module/CreateModuleService';
+import CreateModuleService from '../../../src/services/module/CreateModuleService';
 
 // Definindo o módulo a ser retornado do banco de dados
 const fakePersistedModule = {
