@@ -99,7 +99,7 @@ describe('Module respository integration tests', () => {
 
     expect(updatedModule).toEqual({
       id: expect.any(String),
-      name: 'dataToUpdate.name',
+      name: dataToUpdate.name,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
     });
