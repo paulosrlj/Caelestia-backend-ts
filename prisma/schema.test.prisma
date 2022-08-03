@@ -15,4 +15,52 @@ model Module {
   name    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  theoricLessons TheoricLesson[]
+  praticalLessons PraticalLesson[]
+}
+
+model TheoricLesson {
+  id      String      @id @default(uuid())
+  lessonName    String
+  xpEarned Int
+  description String
+  content Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  module Module @relation(fields: [moduleId], references: [id])
+  moduleId String
+
+  theoricLessonImage TheoricLessonImage[]
+}
+
+model TheoricLessonImage {
+  id      String      @id @default(uuid())
+  urlImage    String
+
+  theoricLesson TheoricLesson @relation(fields: [theoricLessonId], references: [id])
+  theoricLessonId String
+}
+
+model PraticalLesson {
+  id      String      @id @default(uuid())
+  lessonName    String
+  xpEarned Int
+  description String
+  alternative1 String
+  alternative2 String
+  alternative3 String
+  alternative4 String
+  correctAlternative Int
+  urlAlternative1 String
+  urlAlternative2 String
+  urlAlternative3 String
+  urlAlternative4 String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  module Module @relation(fields: [moduleId], references: [id])
+  moduleId String
 }
