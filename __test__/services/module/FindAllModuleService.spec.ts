@@ -1,5 +1,5 @@
 import { Module } from '../../../src/domain/entities';
-import { IFindAllModuleRepository } from '../../../src/repositories/interfaces/IFindAllModuleRepository';
+import { IFindAllModule as IFindAllModuleRepository } from '../../../src/repositories/Module/interfaces/IFindAllModule';
 
 import FindAllModuleService from '../../../src/services/module/FindAllModuleService';
 

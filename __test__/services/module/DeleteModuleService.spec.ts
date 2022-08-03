@@ -1,4 +1,4 @@
-import { IDeleteModuleRepository } from '../../../src/repositories/interfaces/IDeleteModuleRepository';
+import { IDeleteModule as IDeleteModuleRepository } from '../../../src/repositories/Module/interfaces/IDeleteModule';
 
 import DeleteModuleService from '../../../src/services/module/DeleteModuleService';
 

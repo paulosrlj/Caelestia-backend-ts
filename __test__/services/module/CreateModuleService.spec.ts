@@ -1,5 +1,5 @@
 import { Module } from '../../../src/domain/entities';
-import { ICreateModuleRepository } from '../../../src/repositories/interfaces/ICreateModuleRepository';
+import { ICreateModule as ICreateModuleRepository } from '../../../src/repositories/Module/interfaces/ICreateModule';
 
 import CreateModuleService from '../../../src/services/module/CreateModuleService';
 

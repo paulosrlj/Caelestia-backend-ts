@@ -1,8 +1,8 @@
 import { Module } from '../../../src/domain/entities';
 import {
-  IUpdateModuleRepository,
+  IUpdateModule as IUpdateModuleRepository,
   UpdateModuleModel,
-} from '../../../src/repositories/interfaces/IUpdateModuleRepository';
+} from '../../../src/repositories/Module/interfaces/IUpdateModule';
 
 import UpdateModuleService from '../../../src/services/module/UpdateModuleService';
 

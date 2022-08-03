@@ -1,6 +1,6 @@
 import { Module } from '../../../src/domain/entities';
 import NotFound from '../../../src/exceptions/NotFound';
-import { IFindModuleByIdRepository } from '../../../src/repositories/interfaces/IFindByIdRepository';
+import { IFindModuleById as IFindModuleByIdRepository } from '../../../src/repositories/Module/interfaces/IFindById';
 
 import FindModuleByIdService from '../../../src/services/module/FindModuleByIdService';
 

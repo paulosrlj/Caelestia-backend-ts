@@ -1,11 +1,11 @@
 import { NotFoundError } from '@prisma/client/runtime';
-import prisma from '../../../src/config/prismaClient';
+import prisma from '../../../src/config/prismaClientTest';
 
-import CreateModule from '../../../src/repositories/Module/CreateModule';
-import FindModuleById from '../../../src/repositories/Module/FindModuleById';
-import DeleteModule from '../../../src/repositories/Module/DeleteModule';
-import FindAll from '../../../src/repositories/Module/FindAll';
-import UpdateModule from '../../../src/repositories/Module/UpdateModule';
+import ModuleRepository from '../../../src/repositories/Module/ModuleRepository';
+
+const makeSut = () => {
+  return new ModuleRepository(prisma);
+};
 
 describe('Module respository integration tests', () => {
   beforeAll(async () => {
@@ -14,7 +14,7 @@ describe('Module respository integration tests', () => {
   });
 
   test('Should save a module to database', async () => {
-    const sut = new CreateModule();
+    const sut = makeSut();
 
     const moduleToSave = {
       name: 'Modulo 1',
@@ -31,7 +31,7 @@ describe('Module respository integration tests', () => {
   });
 
   test('Should find a module by id', async () => {
-    const sut = new FindModuleById();
+    const sut = makeSut();
 
     const moduleToPersist = { name: 'Módulo para persistir' };
 
@@ -45,7 +45,7 @@ describe('Module respository integration tests', () => {
   });
 
   test('Should throw NotFoundError after delete a module by id', async () => {
-    const sut = new DeleteModule();
+    const sut = makeSut();
 
     const moduleToPersist = { name: 'Módulo para persistir' };
 
@@ -63,7 +63,7 @@ describe('Module respository integration tests', () => {
   });
 
   test('Should return all modules', async () => {
-    const sut = new FindAll();
+    const sut = makeSut();
     const moduleToPersist = { name: 'Módulo para persistir' };
     const moduleToPersist2 = { name: 'Módulo para persistir 2' };
 
@@ -86,7 +86,7 @@ describe('Module respository integration tests', () => {
   });
 
   test('Should update a module name', async () => {
-    const sut = new UpdateModule();
+    const sut = makeSut();
 
     const moduleToPersist = { name: 'Módulo para persistir' };
     const persistedModule = await prisma.module.create({
