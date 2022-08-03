@@ -5,7 +5,7 @@ import {
 } from '../../domain/usecases/Module/update';
 import { IUpdateModule as IUpdateModuleRepository } from '../../repositories/Module/interfaces/IUpdateModule';
 
-class CreateModuleService implements IUpdateModule {
+class UpdateModuleService implements IUpdateModule {
   private updateModule: IUpdateModuleRepository;
 
   constructor(updateModuleRepository: IUpdateModuleRepository) {
@@ -17,4 +17,4 @@ class CreateModuleService implements IUpdateModule {
   }
 }
 
-export default CreateModuleService;
+export default UpdateModuleService;

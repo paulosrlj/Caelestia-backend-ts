@@ -5,7 +5,11 @@ import morgan from 'morgan';
 
 import corsOptions from './config/corsOptions';
 import globalExceptionHandler from './exceptions/GlobalExceptionHandler';
-import prisma from './config/prismaClient';
+import moduleSchema from './helpers/validationSchemas/moduleSchema';
+import ValidationError from './exceptions/ValidationError';
+
+// Routes
+import moduleRoutes from './routes/module.routes';
 
 require('express-async-errors');
 
@@ -39,9 +43,19 @@ class App {
     });
 
     this.app.post('/', async (req: Request, res: Response) => {
-      console.log(req.body);
+      try {
+        const result = await moduleSchema.validateAsync(req.body);
+      } catch (e: any) {
+        console.log(e);
+        if (e.isJoi) {
+          throw new ValidationError(e.name, e.details);
+        }
+      }
+
       return res.json({ ok: 'ok' });
     });
+
+    this.app.use('/modules', moduleRoutes);
   }
 
   middlewares() {
