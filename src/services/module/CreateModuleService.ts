@@ -3,7 +3,7 @@ import {
   CreateModuleModel,
   ICreateModule,
 } from '../../domain/usecases/Module/create';
-import { ICreateModuleRepository } from '../../repositories/interfaces/ICreateModuleRepository';
+import { ICreateModule as ICreateModuleRepository } from '../../repositories/Module/interfaces/ICreateModule';
 
 class CreateModuleService implements ICreateModule {
   private createModule: ICreateModuleRepository;

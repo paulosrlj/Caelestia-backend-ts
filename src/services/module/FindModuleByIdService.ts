@@ -1,11 +1,13 @@
 import { Module } from '../../domain/entities';
 import { IFindModuleById } from '../../domain/usecases/Module/findById';
+
 import NotFound from '../../exceptions/NotFound';
+import { IFindModuleById as IFindModuleByIdRepository } from '../../repositories/Module/interfaces/IFindById';
 
 class FindModuleByIdModuleService implements IFindModuleById {
-  private findModule: IFindModuleById;
+  private findModule: IFindModuleByIdRepository;
 
-  constructor(findModuleRepository: IFindModuleById) {
+  constructor(findModuleRepository: IFindModuleByIdRepository) {
     this.findModule = findModuleRepository;
   }
 

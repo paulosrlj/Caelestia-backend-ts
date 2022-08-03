@@ -1,6 +1,6 @@
 import { Module } from '../../domain/entities';
 import { IFindAllModule } from '../../domain/usecases/Module/findAll';
-import { IFindAllModuleRepository } from '../../repositories/interfaces/IFindAllModuleRepository';
+import { IFindAllModule as IFindAllModuleRepository } from '../../repositories/Module/interfaces/IFindAllModule';
 
 class FindAllModuleByIdModuleService implements IFindAllModule {
   private findAllModule: IFindAllModuleRepository;

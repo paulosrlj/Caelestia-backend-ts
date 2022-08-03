@@ -1,5 +1,5 @@
 import { IDeleteModuleById } from '../../domain/usecases/Module/delete';
-import { IDeleteModuleRepository } from '../../repositories/interfaces/IDeleteModuleRepository';
+import { IDeleteModule as IDeleteModuleRepository } from '../../repositories/Module/interfaces/IDeleteModule';
 
 class DeleteModuleService implements IDeleteModuleById {
   private deleteModule: IDeleteModuleRepository;

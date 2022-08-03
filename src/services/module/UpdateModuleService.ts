@@ -3,7 +3,7 @@ import {
   IUpdateModule,
   UpdateModuleModel,
 } from '../../domain/usecases/Module/update';
-import { IUpdateModuleRepository } from '../../repositories/interfaces/IUpdateModuleRepository';
+import { IUpdateModule as IUpdateModuleRepository } from '../../repositories/Module/interfaces/IUpdateModule';
 
 class CreateModuleService implements IUpdateModule {
   private updateModule: IUpdateModuleRepository;
