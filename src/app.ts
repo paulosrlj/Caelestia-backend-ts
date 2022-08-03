@@ -5,6 +5,7 @@ import morgan from 'morgan';
 
 import corsOptions from './config/corsOptions';
 import globalExceptionHandler from './exceptions/GlobalExceptionHandler';
+import prisma from './config/prismaClient';
 
 require('express-async-errors');
 
@@ -12,9 +13,28 @@ class App {
   app: Express;
 
   routes() {
-    this.app.get('/', (req: Request, res: Response) => {
-      console.log('Oi');
+    this.app.get('/', async (req: Request, res: Response) => {
+      // const theoricLesson = {
+      //   lessonName: 'Lição teórica',
+      //   xpEarned: 80,
+      //   description: 'Descrição da lição',
+      //   content: '{"message": "oi"}',
+      // };
+      // const module = await prisma.module.create({
+      //   data: {
+      //     name: 'Módulo de teste',
+      //     theoricLessons: {
+      //       create: [theoricLesson],
+      //     },
+      //   },
+      // });
 
+      // const modules = await prisma.module.findFirst({
+      //   where: { id: 'd4c4d325-25c5-4097-8927-953a8a8fc5e0' },
+      //   include: { theoricLessons: true },
+      // });
+
+      // console.log(modules);
       return res.json({ ok: 'ok' });
     });
 
