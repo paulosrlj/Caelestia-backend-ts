@@ -4,7 +4,7 @@ import { IFindModuleById } from '../../domain/usecases/Module/findById';
 import NotFound from '../../exceptions/NotFound';
 import { IFindModuleById as IFindModuleByIdRepository } from '../../repositories/Module/interfaces/IFindById';
 
-class FindModuleByIdModuleService implements IFindModuleById {
+class FindModuleByIdService implements IFindModuleById {
   private findModule: IFindModuleByIdRepository;
 
   constructor(findModuleRepository: IFindModuleByIdRepository) {
@@ -22,4 +22,4 @@ class FindModuleByIdModuleService implements IFindModuleById {
   }
 }
 
-export default FindModuleByIdModuleService;
+export default FindModuleByIdService;

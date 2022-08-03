@@ -13,6 +13,8 @@ const globalExceptionHandler: ErrorRequestHandler = (err, req, res, next) => {
     });
   }
 
+  console.log('here');
+
   if (err instanceof NotFound) {
     return res.status(err.code).json({ error: err.message, code: err.code });
   }

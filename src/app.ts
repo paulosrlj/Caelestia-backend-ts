@@ -11,8 +11,6 @@ import ValidationError from './exceptions/ValidationError';
 // Routes
 import moduleRoutes from './routes/module.routes';
 
-require('express-async-errors');
-
 class App {
   app: Express;
 
