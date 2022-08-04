@@ -1,5 +1,4 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-
 import { CreateModuleModel } from '../../domain/usecases/Module/create';
 import { Module } from '../../domain/entities';
 
@@ -35,7 +34,20 @@ class ModuleRepository
   }
 
   findById(id: string): Promise<Module | null> {
-    return this.prismaClient.module.findFirst({ where: { id } });
+    return this.prismaClient.module.findFirst({
+      where: { id },
+      include: {
+        theoricLessons: {
+          select: {
+            id: true,
+            lessonName: true,
+            content: true,
+            xpEarned: true,
+            description: true,
+          },
+        },
+      },
+    });
   }
 
   findAll(): Promise<Module[]> {
