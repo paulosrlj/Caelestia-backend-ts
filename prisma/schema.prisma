@@ -32,15 +32,6 @@ model TheoricLesson {
   module Module @relation(fields: [moduleId], references: [id])
   moduleId String
 
-  theoricLessonImage TheoricLessonImage[]
-}
-
-model TheoricLessonImage {
-  id      String      @id @default(uuid())
-  urlImage    String
-
-  theoricLesson TheoricLesson @relation(fields: [theoricLessonId], references: [id])
-  theoricLessonId String
 }
 
 model PraticalLesson {
