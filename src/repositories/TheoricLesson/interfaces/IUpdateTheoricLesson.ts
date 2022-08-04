@@ -1,7 +1,7 @@
 import { TheoricLesson } from '@prisma/client';
 import { UpdateTheoricLessonModel } from '../../../domain/usecases/TheoricLesson/update';
 
-export interface IUpdateTheoricLesson {
+export interface IUpdateTheoricLessonRepository {
   update(
     id: string,
     theoricLesson: UpdateTheoricLessonModel,

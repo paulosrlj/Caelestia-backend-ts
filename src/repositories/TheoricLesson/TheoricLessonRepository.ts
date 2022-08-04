@@ -2,12 +2,15 @@ import { PrismaClient, Prisma, TheoricLesson } from '@prisma/client';
 import { CreateTheoricLessonModel } from '../../domain/usecases/TheoricLesson/create';
 import { UpdateTheoricLessonModel } from '../../domain/usecases/TheoricLesson/update';
 import NotFound from '../../exceptions/NotFound';
-import { ICreateTheoricLesson } from './interfaces/ICreateTheoricLesson';
-import { IDeleteTheoricLesson } from './interfaces/IDeleteTheoricLesson';
-import { IUpdateTheoricLesson } from './interfaces/IUpdateTheoricLesson';
+import { ICreateTheoricLessonRepository } from './interfaces/ICreateTheoricLesson';
+import { IDeleteTheoricLessonRepository } from './interfaces/IDeleteTheoricLesson';
+import { IUpdateTheoricLessonRepository } from './interfaces/IUpdateTheoricLesson';
 
 class TheoricLessonRepository
-  implements ICreateTheoricLesson, IUpdateTheoricLesson, IDeleteTheoricLesson
+  implements
+    ICreateTheoricLessonRepository,
+    IUpdateTheoricLessonRepository,
+    IDeleteTheoricLessonRepository
 {
   private prismaClient;
 
@@ -24,7 +27,9 @@ class TheoricLessonRepository
   async create(
     theoricLesson: CreateTheoricLessonModel,
   ): Promise<TheoricLesson> {
-    return this.prismaClient.theoricLesson.create({ data: theoricLesson });
+    return this.prismaClient.theoricLesson.create({
+      data: theoricLesson,
+    });
   }
 
   async update(

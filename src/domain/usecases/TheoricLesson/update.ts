@@ -1,13 +1,16 @@
-import { TheoricLesson } from '../../entities/TheoricLesson';
+import { TheoricLesson } from '@prisma/client';
 
 export interface UpdateTheoricLessonModel {
   lessonName?: string;
   xpEarned?: number;
   description?: string;
   content?: string;
-  moduleId: string;
+  moduleId?: string;
 }
 
-export interface IUpdateModule {
-  update(id: string, module: UpdateTheoricLessonModel): Promise<TheoricLesson>;
+export interface IUpdateTheoricLesson {
+  update(
+    id: string,
+    theoricLesson: UpdateTheoricLessonModel,
+  ): Promise<TheoricLesson>;
 }

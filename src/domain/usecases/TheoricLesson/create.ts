@@ -1,4 +1,4 @@
-import { TheoricLesson } from '../../entities/TheoricLesson';
+import { TheoricLesson } from '@prisma/client';
 
 export interface CreateTheoricLessonModel {
   lessonName: string;

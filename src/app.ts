@@ -10,12 +10,23 @@ import ValidationError from './exceptions/ValidationError';
 
 // Routes
 import moduleRoutes from './routes/module.routes';
+import theoricLessonRoutes from './routes/theoricLesson.routes';
+import prisma from './config/prismaClient';
 
 class App {
   app: Express;
 
   routes() {
     this.app.get('/', async (req: Request, res: Response) => {
+      // const theoricLesson = await prisma.theoricLesson.create({
+      //   data: {
+      //     lessonName: 'Lição teórica',
+      //     xpEarned: 80,
+      //     description: 'Descrição da lição',
+      //     content: '{"message": "oi"}',
+      //     moduleId: '30fb43b9-ae5b-4ade-9b44-dd478b24dac0',
+      //   },
+      // });
       // const theoricLesson = {
       //   lessonName: 'Lição teórica',
       //   xpEarned: 80,
@@ -32,7 +43,7 @@ class App {
       // });
 
       // const modules = await prisma.module.findFirst({
-      //   where: { id: 'd4c4d325-25c5-4097-8927-953a8a8fc5e0' },
+      //   where: { id: '30fb43b9-ae5b-4ade-9b44-dd478b24dac0' },
       //   include: { theoricLessons: true },
       // });
 
@@ -54,6 +65,7 @@ class App {
     });
 
     this.app.use('/modules', moduleRoutes);
+    this.app.use('/theoricLessons', theoricLessonRoutes);
   }
 
   middlewares() {
