@@ -54,11 +54,10 @@ class PraticalLessonRepository
   }
 
   async delete(id: string): Promise<void> {
-    const praticalLessonFound = await this.prismaClient.theoricLesson.findFirst(
-      {
+    const praticalLessonFound =
+      await this.prismaClient.praticalLesson.findFirst({
         where: { id },
-      },
-    );
+      });
 
     if (praticalLessonFound === null) {
       throw new NotFound(`A lição prática de id ${id} não existe`);
