@@ -2,16 +2,16 @@ export interface PraticalLesson {
   id: string;
   lessonName: string;
   xpEarned: number;
-  description: number;
+  description: string;
   alternative1: string;
   alternative2: string;
   alternative3: string;
   alternative4: string;
   correctAlternative: number;
-  urlAlternative1: string;
-  urlAlternative2: string;
-  urlAlternative3: string;
-  urlAlternative4: string;
+  urlAlternative1?: string | null;
+  urlAlternative2?: string | null;
+  urlAlternative3?: string | null;
+  urlAlternative4?: string | null;
   createdAt: Date;
   updatedAt: Date;
 
