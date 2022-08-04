@@ -44,10 +44,10 @@ model PraticalLesson {
   alternative3 String
   alternative4 String
   correctAlternative Int
-  urlAlternative1 String
-  urlAlternative2 String
-  urlAlternative3 String
-  urlAlternative4 String
+  urlAlternative1 String?
+  urlAlternative2 String?
+  urlAlternative3 String?
+  urlAlternative4 String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
