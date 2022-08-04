@@ -8,8 +8,8 @@ import { IUpdatePraticalLessonRepository } from '../../repositories/PraticalLess
 class UpdatePraticalLessonService implements IUpdatePraticalLesson {
   private updatePraticalLesson: IUpdatePraticalLessonRepository;
 
-  constructor(createPraticalLesson: IUpdatePraticalLessonRepository) {
-    this.updatePraticalLesson = createPraticalLesson;
+  constructor(updatePraticalLesson: IUpdatePraticalLessonRepository) {
+    this.updatePraticalLesson = updatePraticalLesson;
   }
 
   update(

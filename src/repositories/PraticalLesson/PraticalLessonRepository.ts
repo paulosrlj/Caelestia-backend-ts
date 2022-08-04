@@ -1,5 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client';
-import { PraticalLesson } from '../../domain/entities/PraticalLesson';
+import { PraticalLesson, Prisma, PrismaClient } from '@prisma/client';
 import {
   CreatePraticalLessonModel,
   ICreatePraticalLesson,
