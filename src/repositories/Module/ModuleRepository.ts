@@ -46,12 +46,58 @@ class ModuleRepository
             description: true,
           },
         },
+        praticalLessons: {
+          select: {
+            id: true,
+            lessonName: true,
+            xpEarned: true,
+            description: true,
+            alternative1: true,
+            alternative2: true,
+            alternative3: true,
+            alternative4: true,
+            correctAlternative: true,
+            urlAlternative1: true,
+            urlAlternative2: true,
+            urlAlternative3: true,
+            urlAlternative4: true,
+          },
+        },
       },
     });
   }
 
   findAll(): Promise<Module[]> {
-    return this.prismaClient.module.findMany();
+    return this.prismaClient.module.findMany({
+      include: {
+        theoricLessons: {
+          select: {
+            id: true,
+            lessonName: true,
+            content: true,
+            xpEarned: true,
+            description: true,
+          },
+        },
+        praticalLessons: {
+          select: {
+            id: true,
+            lessonName: true,
+            xpEarned: true,
+            description: true,
+            alternative1: true,
+            alternative2: true,
+            alternative3: true,
+            alternative4: true,
+            correctAlternative: true,
+            urlAlternative1: true,
+            urlAlternative2: true,
+            urlAlternative3: true,
+            urlAlternative4: true,
+          },
+        },
+      },
+    });
   }
 
   async update(id: string, module: UpdateModuleModel): Promise<Module> {

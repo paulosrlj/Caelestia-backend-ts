@@ -1,5 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client';
-import { PraticalLesson } from '../../domain/entities/PraticalLesson';
+import { PraticalLesson, Prisma, PrismaClient } from '@prisma/client';
 import {
   CreatePraticalLessonModel,
   ICreatePraticalLesson,
@@ -54,11 +53,10 @@ class PraticalLessonRepository
   }
 
   async delete(id: string): Promise<void> {
-    const praticalLessonFound = await this.prismaClient.theoricLesson.findFirst(
-      {
+    const praticalLessonFound =
+      await this.prismaClient.praticalLesson.findFirst({
         where: { id },
-      },
-    );
+      });
 
     if (praticalLessonFound === null) {
       throw new NotFound(`A lição prática de id ${id} não existe`);

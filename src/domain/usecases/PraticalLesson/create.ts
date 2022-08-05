@@ -4,6 +4,7 @@ export interface CreatePraticalLessonModel {
   lessonName: string;
   xpEarned: number;
   description: string;
+  coinsEarned: number;
   alternative1: string;
   alternative2: string;
   alternative3: string;

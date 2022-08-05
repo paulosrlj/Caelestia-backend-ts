@@ -11,6 +11,7 @@ import ValidationError from './exceptions/ValidationError';
 // Routes
 import moduleRoutes from './routes/module.routes';
 import theoricLessonRoutes from './routes/theoricLesson.routes';
+import praticalLessonRoutes from './routes/praticalLesson.routes';
 import prisma from './config/prismaClient';
 
 class App {
@@ -66,6 +67,7 @@ class App {
 
     this.app.use('/modules', moduleRoutes);
     this.app.use('/theoricLessons', theoricLessonRoutes);
+    this.app.use('/praticalLessons', praticalLessonRoutes);
   }
 
   middlewares() {

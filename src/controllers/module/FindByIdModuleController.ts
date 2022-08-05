@@ -5,9 +5,11 @@ import BadRequest from '../../exceptions/BadRequest';
 import { IFindModuleById } from '../../domain/usecases/Module/findById';
 import { Module } from '../../domain/entities';
 import { TheoricLesson } from '../../domain/entities/TheoricLesson';
+import { PraticalLesson } from '../../domain/entities/PraticalLesson';
 
 interface FindModuleWithChildren extends Module {
   theoricLessons: TheoricLesson[];
+  praticalLessons: PraticalLesson[];
 }
 
 class FindByIdModuleController implements IFindById {
@@ -28,6 +30,7 @@ class FindByIdModuleController implements IFindById {
       id: module?.id,
       name: module?.name,
       theoricLessons: module?.theoricLessons,
+      praticalLessons: module?.praticalLessons,
     };
 
     return res.status(200).json(responseModule);
