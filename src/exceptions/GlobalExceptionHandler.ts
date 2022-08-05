@@ -14,12 +14,12 @@ const globalExceptionHandler: ErrorRequestHandler = (err, req, res, next) => {
     });
   }
 
-  if (err instanceof NotFound || AlreadyExists) {
+  if (err instanceof NotFound || err instanceof AlreadyExists) {
     return res.status(err.code).json({ error: err.message, code: err.code });
   }
 
-  return res.status(500).json({ error: err.message, code: err.code });
-  // return next(err);
+  // return res.status(500).json({ error: err.message, code: err.code });
+  return next(err);
 };
 
 export default globalExceptionHandler;
