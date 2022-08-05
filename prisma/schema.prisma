@@ -32,6 +32,7 @@ model TheoricLesson {
   module Module @relation(fields: [moduleId], references: [id])
   moduleId String
 
+  players TheoricLessonsFinished[]
 }
 
 model PraticalLesson {
@@ -54,4 +55,101 @@ model PraticalLesson {
 
   module Module @relation(fields: [moduleId], references: [id])
   moduleId String
+
+  players PraticalLessonsFinished[]
+}
+
+model Item {
+  id String @id @default(uuid())
+  name String
+  price Int
+  description String
+  individualItemId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  player PlayerItem[]
+}
+
+model Player {
+  id String @id @default(uuid())
+  email String @unique
+  password String
+  name String
+  nickname String @unique
+  totalPoints Int @default(0)
+  level Int @default(1)
+  coins Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items PlayerItem[]
+
+  rankings PlayerRanking[]
+
+  // Player and praticalLesson
+  praticalLessons PraticalLessonsFinished[]
+
+  // Player and TheoricLesson
+  theoricLessons TheoricLessonsFinished[]
+}
+
+model PlayerItem {
+  player Player @relation(fields: [playerId], references: [id])
+  playerId String
+
+  item Item @relation(fields: [itemId], references: [id])
+  itemId String
+
+  amount Int
+
+  @@id([playerId, itemId])
+}
+
+model PraticalLessonsFinished {
+  player Player @relation(fields: [playerId], references: [id])
+  playerId String
+
+  praticalLesson PraticalLesson @relation(fields: [praticalLessonId], references: [id])
+  praticalLessonId String
+
+  @@id([playerId, praticalLessonId])
+}
+
+model TheoricLessonsFinished {
+  player Player @relation(fields: [playerId], references: [id])
+  playerId String
+
+  theoricLesson TheoricLesson @relation(fields: [theoricLessonId], references: [id])
+  theoricLessonId String
+
+  @@id([playerId, theoricLessonId])
+}
+
+model Ranking {
+  id String @id @default(uuid())
+  rankingName String
+  urlRankingBadge String
+  pointsToPromotion Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  players PlayerRanking[]
+}
+
+model PlayerRanking {
+  player Player @relation(fields: [playerId], references: [id])
+  playerId String
+
+  ranking Ranking @relation(fields: [rankingId], references: [id])
+  rankingId String
+
+  isActive Boolean @default(false)
+  rankingTitle String
+  weeklyPoints Int @default(0)
+
+  @@id([playerId, rankingId])
 }
