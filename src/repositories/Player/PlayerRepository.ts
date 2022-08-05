@@ -1,10 +1,15 @@
-import { Player, Prisma, PrismaClient } from '@prisma/client';
+import { Player as PrismaPlayer, Prisma, PrismaClient } from '@prisma/client';
 import prisma from '../../config/prismaClient';
+import { Player } from '../../domain/entities/Player';
 import { CreatePlayerModel } from '../../domain/usecases/Player/create';
-import AlreadyExists from '../../exceptions/AlreadyExists';
-import { ICreatePlayer } from './interfaces/ICreatePlayer';
 
-class PlayerRepository implements ICreatePlayer {
+import AlreadyExists from '../../exceptions/AlreadyExists';
+import NotFound from '../../exceptions/NotFound';
+
+import { ICreatePlayer } from './interfaces/ICreatePlayer';
+import { IFindByEmailPlayer } from './interfaces/IFindByEmailPlayer';
+
+class PlayerRepository implements ICreatePlayer, IFindByEmailPlayer {
   private prismaClient;
 
   constructor(
@@ -17,7 +22,7 @@ class PlayerRepository implements ICreatePlayer {
     this.prismaClient = prismaClient;
   }
 
-  async create(player: CreatePlayerModel): Promise<Player> {
+  async create(player: CreatePlayerModel): Promise<PrismaPlayer> {
     const playerExists = await this.prismaClient.player.findFirst({
       where: { email: player.email, OR: { nickname: player.nickname } },
     });
@@ -29,6 +34,43 @@ class PlayerRepository implements ICreatePlayer {
     }
 
     return prisma.player.create({ data: player });
+  }
+
+  async findByEmail(email: string): Promise<Player> {
+    const player = await prisma.player.findFirst({
+      where: { email },
+      select: {
+        _count: {
+          select: { theoricLessons: true, praticalLessons: true, friend: true },
+        },
+        id: true,
+        email: true,
+        nickname: true,
+        name: true,
+        coins: true,
+        totalPoints: true,
+        level: true,
+        rankings: {
+          select: {
+            ranking: {
+              select: {
+                id: true,
+                rankingName: true,
+                urlRankingBadge: true,
+                pointsToPromotion: true,
+              },
+            },
+            rankingTitle: true,
+          },
+        },
+      },
+    });
+
+    if (player === null) {
+      throw new NotFound(`O jogador de email ${email} não existe`);
+    }
+
+    return player;
   }
 }
 
