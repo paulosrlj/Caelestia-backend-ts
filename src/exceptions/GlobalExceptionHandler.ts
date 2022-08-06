@@ -1,5 +1,6 @@
 import { ErrorRequestHandler } from 'express';
 import AlreadyExists from './AlreadyExists';
+import BadRequest from './BadRequest';
 import NotFound from './NotFound';
 import ValidationError from './ValidationError';
 
@@ -14,7 +15,11 @@ const globalExceptionHandler: ErrorRequestHandler = (err, req, res, next) => {
     });
   }
 
-  if (err instanceof NotFound || err instanceof AlreadyExists) {
+  if (
+    err instanceof NotFound ||
+    err instanceof AlreadyExists ||
+    err instanceof BadRequest
+  ) {
     return res.status(err.code).json({ error: err.message, code: err.code });
   }
 

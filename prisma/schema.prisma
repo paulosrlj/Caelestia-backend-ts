@@ -75,14 +75,16 @@ model Item {
 }
 
 model Player {
-  id          String @id @default(uuid())
-  email       String @unique
-  password    String
-  name        String
-  nickname    String @unique
-  totalPoints Int    @default(0)
-  level       Int    @default(1)
-  coins       Int    @default(0)
+  id            String  @id @default(uuid())
+  email         String  @unique
+  password      String
+  name          String
+  nickname      String  @unique
+  totalPoints   Int     @default(0)
+  level         Int     @default(1)
+  coins         Int     @default(0)
+  urlProfileImg String?
+  isProfileActive Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -100,14 +102,14 @@ model Player {
   // Player's friends n:n relation
   // A player can have 0,n friends
   selfPlayerId PlayerFriend[] @relation("selfPlayer")
-  friend PlayerFriend[] @relation("friend")
+  friend       PlayerFriend[] @relation("friend")
 }
 
 model PlayerFriend {
-  selfPlayer Player @relation("selfPlayer", fields: [selfPlayerId], references: [id])
+  selfPlayer   Player @relation("selfPlayer", fields: [selfPlayerId], references: [id])
   selfPlayerId String
 
-  friend Player @relation("friend", fields: [friendId], references: [id])
+  friend   Player @relation("friend", fields: [friendId], references: [id])
   friendId String
 
   @@id([selfPlayerId, friendId])
