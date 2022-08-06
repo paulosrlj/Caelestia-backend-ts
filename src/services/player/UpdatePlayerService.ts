@@ -7,7 +7,7 @@ import {
 } from '../../domain/usecases/Player/update';
 import { IUpdatePlayer as IUpdatePlayerRepository } from '../../repositories/Player/interfaces/IUpdatePlayer';
 
-class CreatePlayerService implements IUpdatePlayer {
+class UpdatePlayerService implements IUpdatePlayer {
   private updatePlayer;
 
   constructor(updatePlayer: IUpdatePlayerRepository) {
@@ -25,4 +25,4 @@ class CreatePlayerService implements IUpdatePlayer {
   }
 }
 
-export default CreatePlayerService;
+export default UpdatePlayerService;

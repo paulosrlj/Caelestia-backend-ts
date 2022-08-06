@@ -3,10 +3,12 @@ import prisma from '../config/prismaClient';
 import CreatePlayerController from '../controllers/player/CreatePlayerController';
 import DeactivatePlayerController from '../controllers/player/DeactivatePlayerController';
 import FindByEmailPlayerController from '../controllers/player/FindByEmailPlayerController';
+import UpdatePlayerController from '../controllers/player/UpdatePlayerController';
 import PlayerRepository from '../repositories/Player/PlayerRepository';
 import CreatePlayerService from '../services/player/CreatePlayerService';
 import DeactivatePlayerService from '../services/player/DeactivatePlayerService';
 import FindByEmailPlayerService from '../services/player/FindByEmailPlayerService';
+import UpdatePlayerService from '../services/player/UpdatePlayerService';
 
 require('express-async-errors');
 
@@ -28,11 +30,16 @@ const findByEmailController = new FindByEmailPlayerController(
 const deactivateService = new DeactivatePlayerService(playerRepository);
 const deactivateController = new DeactivatePlayerController(deactivateService);
 
+// update
+const updateService = new UpdatePlayerService(playerRepository);
+const updateController = new UpdatePlayerController(updateService);
+
 router.post('/', createController.handle.bind(createController));
 router.get(
   '/email/:email',
   findByEmailController.handle.bind(findByEmailController),
 );
+router.put('/:email', updateController.handle.bind(updateController));
 router.delete(
   '/deactivate/',
   deactivateController.handle.bind(deactivateController),
