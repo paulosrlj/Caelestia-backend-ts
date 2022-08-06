@@ -7,6 +7,7 @@ export interface Player {
   totalPoints?: number;
   level?: number;
   coins?: number;
+  urlProfileImg?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
