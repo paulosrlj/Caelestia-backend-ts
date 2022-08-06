@@ -1,6 +1,7 @@
 import { Player as PrismaPlayer, Prisma, PrismaClient } from '@prisma/client';
 import { Player } from '../../domain/entities/Player';
 import { CreatePlayerModel } from '../../domain/usecases/Player/create';
+import { UpdatePlayerModel } from '../../domain/usecases/Player/update';
 
 import AlreadyExists from '../../exceptions/AlreadyExists';
 import NotFound from '../../exceptions/NotFound';
@@ -8,9 +9,14 @@ import NotFound from '../../exceptions/NotFound';
 import { ICreatePlayer } from './interfaces/ICreatePlayer';
 import { IDeactivatePlayer } from './interfaces/IDeactivatePlayer';
 import { IFindByEmailPlayer } from './interfaces/IFindByEmailPlayer';
+import { IUpdatePlayer } from './interfaces/IUpdatePlayer';
 
 class PlayerRepository
-  implements ICreatePlayer, IFindByEmailPlayer, IDeactivatePlayer
+  implements
+    ICreatePlayer,
+    IFindByEmailPlayer,
+    IDeactivatePlayer,
+    IUpdatePlayer
 {
   private prismaClient;
 
@@ -88,6 +94,29 @@ class PlayerRepository
     await this.prismaClient.player.update({
       where: { email },
       data: { isProfileActive: false },
+    });
+  }
+
+  async update(email: string, player: UpdatePlayerModel): Promise<Player> {
+    const playerFound = await this.prismaClient.player.findFirst({
+      where: { email },
+    });
+
+    if (!playerFound) {
+      throw new NotFound(`O jogador de email ${email} não existe`);
+    }
+
+    return this.prismaClient.player.update({
+      where: { email },
+      data: player,
+      select: {
+        id: true,
+        name: true,
+        nickname: true,
+        level: true,
+        coins: true,
+        totalPoints: true,
+      },
     });
   }
 }

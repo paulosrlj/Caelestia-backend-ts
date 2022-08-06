@@ -5,11 +5,11 @@ export interface UpdatePlayerModel {
   name?: string;
   nickname?: string;
   urlProfileImg?: string;
-  totalPoints?: string;
-  level?: string;
-  coints?: string;
+  totalPoints?: number;
+  level?: number;
+  coins?: number;
 }
 
 export interface IUpdatePlayer {
-  update(id: string, player: UpdatePlayerModel): Promise<Player>;
+  update(email: string, player: UpdatePlayerModel): Promise<Player>;
 }
