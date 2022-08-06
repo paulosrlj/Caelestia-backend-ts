@@ -1,5 +1,4 @@
 import { Player as PrismaPlayer, Prisma, PrismaClient } from '@prisma/client';
-import prisma from '../../config/prismaClient';
 import { Player } from '../../domain/entities/Player';
 import { CreatePlayerModel } from '../../domain/usecases/Player/create';
 
@@ -7,9 +6,12 @@ import AlreadyExists from '../../exceptions/AlreadyExists';
 import NotFound from '../../exceptions/NotFound';
 
 import { ICreatePlayer } from './interfaces/ICreatePlayer';
+import { IDeactivatePlayer } from './interfaces/IDeactivatePlayer';
 import { IFindByEmailPlayer } from './interfaces/IFindByEmailPlayer';
 
-class PlayerRepository implements ICreatePlayer, IFindByEmailPlayer {
+class PlayerRepository
+  implements ICreatePlayer, IFindByEmailPlayer, IDeactivatePlayer
+{
   private prismaClient;
 
   constructor(
@@ -33,11 +35,11 @@ class PlayerRepository implements ICreatePlayer, IFindByEmailPlayer {
       );
     }
 
-    return prisma.player.create({ data: player });
+    return this.prismaClient.player.create({ data: player });
   }
 
   async findByEmail(email: string): Promise<Player> {
-    const player = await prisma.player.findFirst({
+    const player = await this.prismaClient.player.findFirst({
       where: { email },
       select: {
         _count: {
@@ -50,6 +52,7 @@ class PlayerRepository implements ICreatePlayer, IFindByEmailPlayer {
         coins: true,
         totalPoints: true,
         level: true,
+        urlProfileImg: true,
         rankings: {
           select: {
             ranking: {
@@ -71,6 +74,21 @@ class PlayerRepository implements ICreatePlayer, IFindByEmailPlayer {
     }
 
     return player;
+  }
+
+  async deactivate(email: string): Promise<void> {
+    const player = await this.prismaClient.player.findFirst({
+      where: { email },
+    });
+
+    if (!player) {
+      throw new NotFound(`O jogador de email ${email} não existe`);
+    }
+
+    await this.prismaClient.player.update({
+      where: { email },
+      data: { isProfileActive: false },
+    });
   }
 }
 
