@@ -1,21 +1,32 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 import {
   ILoginPlayer,
   LoginPlayerModel,
 } from '../../domain/usecases/Player/login';
-import { IFindByEmailAndPassword as IFindByEmailAndPasswordRepository } from '../../repositories/Player/interfaces/IFindByEmailAndPassword';
+import { ILoginPlayer as ILoginPlayerRepository } from '../../repositories/Player/interfaces/ILoginPlayer';
+import WrongPassword from '../../exceptions/WrongPassword';
 
 class LoginPlayerService implements ILoginPlayer {
-  private findByEmailAndPassword;
+  private loginPlayerRepository;
 
-  constructor(findByEmailAndPassword: IFindByEmailAndPasswordRepository) {
-    this.findByEmailAndPassword = findByEmailAndPassword;
+  constructor(loginPlayerRepository: ILoginPlayerRepository) {
+    this.loginPlayerRepository = loginPlayerRepository;
   }
 
   async loginPlayer(player: LoginPlayerModel): Promise<string> {
-    const playerFound =
-      await this.findByEmailAndPassword.findByEmailAndPassword(player);
+    const playerFound = await this.loginPlayerRepository.loginPlayer(
+      player.email,
+    );
+
+    const comparation = await bcrypt.compare(
+      player.password,
+      playerFound.password as string,
+    );
+    if (!comparation) {
+      throw new WrongPassword(`A senha está incorreta`);
+    }
 
     const token = jwt.sign(
       { id: playerFound.id, email: playerFound.email },

@@ -1,7 +1,6 @@
 import { Player as PrismaPlayer, Prisma, PrismaClient } from '@prisma/client';
 import { Player } from '../../domain/entities/Player';
 import { CreatePlayerModel } from '../../domain/usecases/Player/create';
-import { LoginPlayerModel } from '../../domain/usecases/Player/login';
 import { UpdatePlayerModel } from '../../domain/usecases/Player/update';
 
 import AlreadyExists from '../../exceptions/AlreadyExists';
@@ -10,7 +9,7 @@ import NotFound from '../../exceptions/NotFound';
 import { ICreatePlayer } from './interfaces/ICreatePlayer';
 import { IDeactivatePlayer } from './interfaces/IDeactivatePlayer';
 import { IFindByEmailPlayer } from './interfaces/IFindByEmailPlayer';
-import { IFindByEmailAndPassword } from './interfaces/IFindByEmailAndPassword';
+import { ILoginPlayer } from './interfaces/ILoginPlayer';
 import { IUpdatePlayer } from './interfaces/IUpdatePlayer';
 
 class PlayerRepository
@@ -19,7 +18,7 @@ class PlayerRepository
     IFindByEmailPlayer,
     IDeactivatePlayer,
     IUpdatePlayer,
-    IFindByEmailAndPassword
+    ILoginPlayer
 {
   private prismaClient;
 
@@ -123,23 +122,17 @@ class PlayerRepository
     });
   }
 
-  async findByEmailAndPassword({
-    email,
-    password,
-  }: LoginPlayerModel): Promise<Player> {
+  async loginPlayer(email: string): Promise<Player> {
     const player = await this.prismaClient.player.findFirst({
-      where: {
-        AND: [
-          {
-            email,
-          },
-          { password },
-        ],
+      where: { email },
+      select: {
+        email: true,
+        password: true,
       },
     });
 
-    if (!player) {
-      throw new NotFound(`Email ou senha incorretos`);
+    if (player === null) {
+      throw new NotFound(`O jogador de email ${email} não existe`);
     }
 
     return player;

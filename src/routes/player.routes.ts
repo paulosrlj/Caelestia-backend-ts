@@ -3,11 +3,13 @@ import prisma from '../config/prismaClient';
 import CreatePlayerController from '../controllers/player/CreatePlayerController';
 import DeactivatePlayerController from '../controllers/player/DeactivatePlayerController';
 import FindByEmailPlayerController from '../controllers/player/FindByEmailPlayerController';
+import LoginPlayerController from '../controllers/player/LoginPlayerController';
 import UpdatePlayerController from '../controllers/player/UpdatePlayerController';
 import PlayerRepository from '../repositories/Player/PlayerRepository';
 import CreatePlayerService from '../services/player/CreatePlayerService';
 import DeactivatePlayerService from '../services/player/DeactivatePlayerService';
 import FindByEmailPlayerService from '../services/player/FindByEmailPlayerService';
+import LoginPlayerService from '../services/player/LoginPlayerService';
 import UpdatePlayerService from '../services/player/UpdatePlayerService';
 
 require('express-async-errors');
@@ -34,6 +36,10 @@ const deactivateController = new DeactivatePlayerController(deactivateService);
 const updateService = new UpdatePlayerService(playerRepository);
 const updateController = new UpdatePlayerController(updateService);
 
+// login
+const loginService = new LoginPlayerService(playerRepository);
+const loginController = new LoginPlayerController(loginService);
+
 router.post('/', createController.handle.bind(createController));
 router.get(
   '/email/:email',
@@ -44,5 +50,6 @@ router.delete(
   '/deactivate/',
   deactivateController.handle.bind(deactivateController),
 );
+router.post('/login/', loginController.handle.bind(loginController));
 
 export default router;

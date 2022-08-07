@@ -3,6 +3,7 @@ import AlreadyExists from './AlreadyExists';
 import BadRequest from './BadRequest';
 import NotFound from './NotFound';
 import ValidationError from './ValidationError';
+import WrongPassword from './WrongPassword';
 
 const globalExceptionHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (err instanceof ValidationError) {
@@ -18,7 +19,8 @@ const globalExceptionHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (
     err instanceof NotFound ||
     err instanceof AlreadyExists ||
-    err instanceof BadRequest
+    err instanceof BadRequest ||
+    err instanceof WrongPassword
   ) {
     return res.status(err.code).json({ error: err.message, code: err.code });
   }
