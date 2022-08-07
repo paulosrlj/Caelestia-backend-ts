@@ -1,4 +1,4 @@
-interface LoginPlayerModel {
+export interface LoginPlayerModel {
   email: string;
   password: string;
 }
