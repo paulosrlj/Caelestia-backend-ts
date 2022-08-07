@@ -32,7 +32,7 @@ class PlayerRepository
 
   async create(player: CreatePlayerModel): Promise<PrismaPlayer> {
     const playerExists = await this.prismaClient.player.findFirst({
-      where: { email: player.email, OR: { nickname: player.nickname } },
+      where: { OR: [{ email: player.email }, { nickname: player.nickname }] },
     });
 
     if (playerExists !== null) {

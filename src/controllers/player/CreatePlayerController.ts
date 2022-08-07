@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ICreatePlayer } from '../../domain/usecases/Player/create';
 import ValidationError from '../../exceptions/ValidationError';
 import playerPresentation from '../../helpers/presentationModels/playerPresentation';
-import playerSchema from '../../helpers/validationSchemas/playerSchema';
+import { playerSchema } from '../../helpers/validationSchemas/playerSchema';
 import { ICreate } from '../interfaces/create';
 
 class CreatePlayerController implements ICreate {

@@ -7,4 +7,14 @@ const playerSchema = Joi.object({
   name: Joi.string().required(),
 });
 
-export default playerSchema;
+const playerUpdateSchema = Joi.object({
+  password: Joi.string().min(6).max(30),
+  nickname: Joi.string().min(3).max(20),
+  name: Joi.string(),
+  totalPoints: Joi.number(),
+  level: Joi.number().min(1),
+  coins: Joi.number(),
+  urlProfileImg: Joi.string(),
+});
+
+export { playerSchema, playerUpdateSchema };
