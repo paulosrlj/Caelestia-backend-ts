@@ -5,6 +5,7 @@ export interface Achievement {
   bonusType?: string;
   description?: string;
   achievementBadge?: string;
+  moduleId?: string;
   createdA?: Date;
   updatedAt?: Date;
 }

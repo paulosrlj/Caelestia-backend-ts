@@ -4,6 +4,7 @@ export interface CreateAchievementModel {
   achievementName: string;
   description: string;
   bonusPercentage: number;
+  moduleId: string;
   bonusType: string;
   achievementBadge: string;
 }

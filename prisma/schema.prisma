@@ -16,6 +16,8 @@ model Module {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  achievement Achievement?
+
   theoricLessons  TheoricLesson[]
   praticalLessons PraticalLesson[]
 }
@@ -188,6 +190,10 @@ model Achievement {
   bonusPercentage Float
   bonusType String
   achievementBadge String
+
+  module Module @relation(fields: [moduleId], references: [id])
+  moduleId String @unique
+
 
   players PlayerAchievements[]
 
