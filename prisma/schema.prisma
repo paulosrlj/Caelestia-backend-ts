@@ -99,10 +99,14 @@ model Player {
   // Player and TheoricLesson
   theoricLessons TheoricLessonsFinished[]
 
+  // Self relation
   // Player's friends n:n relation
   // A player can have 0,n friends
   selfPlayerId PlayerFriend[] @relation("selfPlayer")
   friend       PlayerFriend[] @relation("friend")
+
+  // Player and achievements
+  achievements PlayerAchievements[]
 }
 
 model PlayerFriend {
@@ -175,4 +179,32 @@ model PlayerRanking {
   weeklyPoints Int     @default(0)
 
   @@id([playerId, rankingId])
+}
+
+model Achievement {
+  id                String @id @default(uuid())
+  achievementName String
+  description String
+  bonusPercentage Float
+  bonusType String
+  achievementBadge String
+
+  players PlayerAchievements[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PlayerAchievements {
+  player   Player @relation(fields: [playerId], references: [id])
+  playerId String
+
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  achievementId String
+
+  achievementLevel Int @default(1)
+  additionalBonusPercentage Float
+  isEquiped Boolean @default(false)
+
+  @@id([playerId, achievementId])
 }

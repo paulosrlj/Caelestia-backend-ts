@@ -13,6 +13,8 @@ import moduleRoutes from './routes/module.routes';
 import theoricLessonRoutes from './routes/theoricLesson.routes';
 import praticalLessonRoutes from './routes/praticalLesson.routes';
 import playerRoutes from './routes/player.routes';
+import achievementRoutes from './routes/achievement.routes';
+
 import prisma from './config/prismaClient';
 
 class App {
@@ -164,6 +166,7 @@ class App {
     this.app.use('/theoricLessons', theoricLessonRoutes);
     this.app.use('/praticalLessons', praticalLessonRoutes);
     this.app.use('/players', playerRoutes);
+    this.app.use('/achievements', achievementRoutes);
   }
 
   middlewares() {
