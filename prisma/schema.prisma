@@ -87,6 +87,7 @@ model Player {
   coins           Int     @default(0)
   urlProfileImg   String?
   isProfileActive Boolean @default(true)
+  currentXp Int @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
