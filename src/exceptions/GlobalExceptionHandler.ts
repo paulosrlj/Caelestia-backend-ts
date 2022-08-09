@@ -1,6 +1,7 @@
 import { ErrorRequestHandler } from 'express';
 import AlreadyExists from './AlreadyExists';
 import BadRequest from './BadRequest';
+import InvalidToken from './InvalidToken';
 import NotFound from './NotFound';
 import ValidationError from './ValidationError';
 import WrongPassword from './WrongPassword';
@@ -20,7 +21,8 @@ const globalExceptionHandler: ErrorRequestHandler = (err, req, res, next) => {
     err instanceof NotFound ||
     err instanceof AlreadyExists ||
     err instanceof BadRequest ||
-    err instanceof WrongPassword
+    err instanceof WrongPassword ||
+    err instanceof InvalidToken
   ) {
     return res.status(err.code).json({ error: err.message, code: err.code });
   }

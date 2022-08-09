@@ -126,6 +126,7 @@ class PlayerRepository
     const player = await this.prismaClient.player.findFirst({
       where: { email },
       select: {
+        id: true,
         email: true,
         password: true,
       },

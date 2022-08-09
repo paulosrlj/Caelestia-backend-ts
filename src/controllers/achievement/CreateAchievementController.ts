@@ -4,7 +4,7 @@ import { ICreate } from '../interfaces/create';
 
 import { ICreateAchievement } from '../../domain/usecases/Achievement/create';
 import ValidationError from '../../exceptions/ValidationError';
-import achievementSchema from '../../helpers/validationSchemas/achievementSchema';
+import { achievementSchema } from '../../helpers/validationSchemas/achievementSchema';
 
 class CreateAchievementController implements ICreate {
   private createService;

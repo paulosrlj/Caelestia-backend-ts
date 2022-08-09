@@ -4,8 +4,10 @@ export interface CreateAchievementModel {
   achievementName: string;
   description: string;
   bonusPercentage: number;
+  addBonusPercentagePerLevel: number;
   moduleId: string;
   bonusType: string;
+  levelUpPrice: number;
   achievementBadge: string;
 }
 
