@@ -77,15 +77,15 @@ model Item {
 }
 
 model Player {
-  id            String  @id @default(uuid())
-  email         String  @unique
-  password      String
-  name          String
-  nickname      String  @unique
-  totalPoints   Int     @default(0)
-  level         Int     @default(1)
-  coins         Int     @default(0)
-  urlProfileImg String?
+  id              String  @id @default(uuid())
+  email           String  @unique
+  password        String
+  name            String
+  nickname        String  @unique
+  totalPoints     Int     @default(0)
+  level           Int     @default(1)
+  coins           Int     @default(0)
+  urlProfileImg   String?
   isProfileActive Boolean @default(true)
 
   createdAt DateTime @default(now())
@@ -184,16 +184,17 @@ model PlayerRanking {
 }
 
 model Achievement {
-  id                String @id @default(uuid())
-  achievementName String
-  description String
-  bonusPercentage Float
-  bonusType String
-  achievementBadge String
+  id                         String @id @default(uuid())
+  achievementName            String
+  description                String
+  bonusPercentage            Float
+  addBonusPercentagePerLevel Float
+  bonusType                  String
+  achievementBadge           String
+  levelUpPrice               Int
 
-  module Module @relation(fields: [moduleId], references: [id])
+  module   Module @relation(fields: [moduleId], references: [id])
   moduleId String @unique
-
 
   players PlayerAchievements[]
 
@@ -208,9 +209,9 @@ model PlayerAchievements {
   achievement   Achievement @relation(fields: [achievementId], references: [id])
   achievementId String
 
-  achievementLevel Int @default(1)
-  additionalBonusPercentage Float
-  isEquiped Boolean @default(false)
+  achievementLevel    Int     @default(1)
+  currentLevelUpPrice Int     @default(0)
+  isEquiped           Boolean @default(false)
 
   @@id([playerId, achievementId])
 }
