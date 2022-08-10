@@ -6,6 +6,7 @@ export interface Player {
   nickname?: string;
   totalPoints?: number;
   level?: number;
+  currentXp?: number;
   coins?: number;
   urlProfileImg?: string | null;
   createdAt?: Date;
