@@ -1,6 +1,7 @@
 import { PlayerAchievements, Prisma, PrismaClient } from '@prisma/client';
 import { Achievement } from '../../domain/entities/Achievement';
 import { CreateAchievementModel } from '../../domain/usecases/Achievement/create';
+import { equipAchievementModel } from '../../domain/usecases/Achievement/equipAchievement';
 import AlreadyExists from '../../exceptions/AlreadyExists';
 import NotFound from '../../exceptions/NotFound';
 import { ICreateAchievement } from './interfaces/ICreateAchievement';
@@ -8,10 +9,15 @@ import {
   ICreatePlayerAchievement,
   playerAchievementModelRepository,
 } from './interfaces/ICreatePlayerAchievement';
+import { IEquipPlayerAchievement } from './interfaces/IEquipAchievement';
 import { IFindAchievement } from './interfaces/IFindAchievement';
 
 class AchievementRepository
-  implements ICreateAchievement, ICreatePlayerAchievement, IFindAchievement
+  implements
+    ICreateAchievement,
+    ICreatePlayerAchievement,
+    IFindAchievement,
+    IEquipPlayerAchievement
 {
   private prismaClient;
 
@@ -66,6 +72,50 @@ class AchievementRepository
       throw new NotFound(`Conquista de id ${achievementId} não encontrado`);
 
     return achievement;
+  }
+
+  async equipPlayerAchievement({
+    achievementId,
+    playerId,
+  }: equipAchievementModel): Promise<PlayerAchievements> {
+    await this.findById(achievementId);
+    const player = await this.prismaClient.player.findFirst({
+      where: { id: playerId },
+    });
+
+    if (!player) throw new NotFound('O jogador não existe');
+
+    // Verificar se existe existe a conquist associada com o jogador
+    const playerAc = await this.prismaClient.playerAchievements.findFirst({
+      where: { achievementId, playerId },
+    });
+
+    if (!playerAc)
+      throw new NotFound('Não exise uma conquista associada com esse jogador');
+
+    // buscar e desequipar uma conquista já equipada
+    const alreadyEquiped = await this.prismaClient.playerAchievements.findFirst(
+      {
+        where: { isEquiped: true },
+      },
+    );
+
+    if (alreadyEquiped) {
+      await this.prismaClient.playerAchievements.update({
+        where: {
+          playerId_achievementId: {
+            achievementId: alreadyEquiped.achievementId,
+            playerId: alreadyEquiped.playerId,
+          },
+        },
+        data: { isEquiped: false },
+      });
+    }
+
+    return this.prismaClient.playerAchievements.update({
+      where: { playerId_achievementId: { achievementId, playerId } },
+      data: { isEquiped: true },
+    });
   }
 }
 
