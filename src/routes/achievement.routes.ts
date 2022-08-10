@@ -3,12 +3,14 @@ import prisma from '../config/prismaClient';
 import CreateAchievementController from '../controllers/achievement/CreateAchievementController';
 import CreatePlayerAchievementController from '../controllers/achievement/CreatePlayerAchievementController';
 import EquipAchievement from '../controllers/achievement/EquipAchievementController';
+import LevelUpAchievementController from '../controllers/achievement/LevelUpAchievementController';
 import AchievementRepository from '../repositories/Achievement/AchievementRepository';
 import ModuleRepository from '../repositories/Module/ModuleRepository';
 import CreateAchievementService from '../services/achievement/CreateAchievementService';
 import CreatePlayerAchievementService from '../services/achievement/CreatePlayerAchievementService';
 import EquipAchievementService from '../services/achievement/EquipAchievementService';
 import FindAchievementById from '../services/achievement/FindAchievementById';
+import LevelUpAchievementService from '../services/achievement/LevelUpAchievementService';
 
 require('express-async-errors');
 
@@ -42,6 +44,10 @@ const createPlayerAchievementController = new CreatePlayerAchievementController(
 const equipAchievement = new EquipAchievementService(achievementRepository);
 const equipAchievementController = new EquipAchievement(equipAchievement);
 
+// levelup achievement
+const levelUpAc = new LevelUpAchievementService(achievementRepository);
+const levelUpController = new LevelUpAchievementController(levelUpAc);
+
 router.post('/', achievementController.handle.bind(achievementController));
 router.post(
   '/player-achievements',
@@ -52,6 +58,11 @@ router.post(
 router.post(
   '/equip-achievement',
   equipAchievementController.handle.bind(equipAchievementController),
+);
+
+router.post(
+  '/levelup-achievement',
+  levelUpController.handle.bind(levelUpController),
 );
 
 export default router;
