@@ -22,4 +22,15 @@ const loginPlayerSchema = Joi.object({
   password: Joi.string().min(6).max(30).required(),
 });
 
-export { playerSchema, playerUpdateSchema, loginPlayerSchema };
+const levelUpPlayerSchema = Joi.object({
+  email: Joi.string().email().required(),
+  xpEarned: Joi.number().required(),
+  coinsEarned: Joi.number().required(),
+});
+
+export {
+  playerSchema,
+  levelUpPlayerSchema,
+  playerUpdateSchema,
+  loginPlayerSchema,
+};
