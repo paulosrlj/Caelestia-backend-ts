@@ -2,7 +2,9 @@ import { PlayerAchievements, Prisma, PrismaClient } from '@prisma/client';
 import { Achievement } from '../../domain/entities/Achievement';
 import { CreateAchievementModel } from '../../domain/usecases/Achievement/create';
 import { equipAchievementModel } from '../../domain/usecases/Achievement/equipAchievement';
+import { levelUpAchievementModel } from '../../domain/usecases/Achievement/levelUpPlayerAchievement';
 import AlreadyExists from '../../exceptions/AlreadyExists';
+import BadRequest from '../../exceptions/BadRequest';
 import NotFound from '../../exceptions/NotFound';
 import { ICreateAchievement } from './interfaces/ICreateAchievement';
 import {
@@ -11,13 +13,15 @@ import {
 } from './interfaces/ICreatePlayerAchievement';
 import { IEquipPlayerAchievement } from './interfaces/IEquipAchievement';
 import { IFindAchievement } from './interfaces/IFindAchievement';
+import { ILevelUpAchievement } from './interfaces/ILevelUpAchievement';
 
 class AchievementRepository
   implements
     ICreateAchievement,
     ICreatePlayerAchievement,
     IFindAchievement,
-    IEquipPlayerAchievement
+    IEquipPlayerAchievement,
+    ILevelUpAchievement
 {
   private prismaClient;
 
@@ -85,7 +89,7 @@ class AchievementRepository
 
     if (!player) throw new NotFound('O jogador não existe');
 
-    // Verificar se existe existe a conquist associada com o jogador
+    // Verificar se existe existe a conquista associada com o jogador
     const playerAc = await this.prismaClient.playerAchievements.findFirst({
       where: { achievementId, playerId },
     });
@@ -115,6 +119,43 @@ class AchievementRepository
     return this.prismaClient.playerAchievements.update({
       where: { playerId_achievementId: { achievementId, playerId } },
       data: { isEquiped: true },
+    });
+  }
+
+  async levelUpAchievement({
+    achievementId,
+    playerId,
+  }: levelUpAchievementModel): Promise<PlayerAchievements> {
+    const ac = await this.findById(achievementId);
+    const player = await this.prismaClient.player.findFirst({
+      where: { id: playerId },
+    });
+    if (!player) throw new NotFound('O jogador não existe');
+
+    // Verificar se existe existe a conquista associada com o jogador
+    const playerAc = await this.prismaClient.playerAchievements.findFirst({
+      where: { achievementId, playerId },
+    });
+    if (!playerAc)
+      throw new NotFound('Não exise uma conquista associada com esse jogador');
+
+    if (playerAc.currentLevelUpPrice! > player.coins)
+      throw new BadRequest(
+        'As moedas são insuficientes para melhorar a conquista',
+      );
+
+    await this.prismaClient.player.update({
+      where: { id: playerId },
+      data: { coins: player.coins - playerAc.currentLevelUpPrice },
+    });
+
+    return this.prismaClient.playerAchievements.update({
+      where: { playerId_achievementId: { achievementId, playerId } },
+      data: {
+        achievementLevel: playerAc.achievementLevel + 1,
+        currentLevelUpPrice:
+          playerAc.currentLevelUpPrice + ac.levelUpPrice! * 0.1,
+      },
     });
   }
 }
