@@ -9,6 +9,7 @@ import NotFound from '../../exceptions/NotFound';
 import { ICreatePlayer } from './interfaces/ICreatePlayer';
 import { IDeactivatePlayer } from './interfaces/IDeactivatePlayer';
 import { IFindByEmailPlayer } from './interfaces/IFindByEmailPlayer';
+import { IFindByIdPlayer } from './interfaces/IFindByIdPlayer';
 import { ILoginPlayer } from './interfaces/ILoginPlayer';
 import { IUpdatePlayer } from './interfaces/IUpdatePlayer';
 
@@ -18,7 +19,8 @@ class PlayerRepository
     IFindByEmailPlayer,
     IDeactivatePlayer,
     IUpdatePlayer,
-    ILoginPlayer
+    ILoginPlayer,
+    IFindByIdPlayer
 {
   private prismaClient;
 
@@ -30,6 +32,13 @@ class PlayerRepository
     >,
   ) {
     this.prismaClient = prismaClient;
+  }
+
+  async findById(id: string): Promise<Player> {
+    const player = await this.prismaClient.player.findFirst({ where: { id } });
+    if (!player) throw new NotFound('O jogador não existe');
+
+    return player;
   }
 
   async create(player: CreatePlayerModel): Promise<PrismaPlayer> {
