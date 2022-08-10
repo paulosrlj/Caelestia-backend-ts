@@ -3,12 +3,14 @@ import prisma from '../config/prismaClient';
 import CreatePlayerController from '../controllers/player/CreatePlayerController';
 import DeactivatePlayerController from '../controllers/player/DeactivatePlayerController';
 import FindByEmailPlayerController from '../controllers/player/FindByEmailPlayerController';
+import LevelUpPlayerController from '../controllers/player/LevelUpPlayerController';
 import LoginPlayerController from '../controllers/player/LoginPlayerController';
 import UpdatePlayerController from '../controllers/player/UpdatePlayerController';
 import PlayerRepository from '../repositories/Player/PlayerRepository';
 import CreatePlayerService from '../services/player/CreatePlayerService';
 import DeactivatePlayerService from '../services/player/DeactivatePlayerService';
 import FindByEmailPlayerService from '../services/player/FindByEmailPlayerService';
+import LevelUpPlayerService from '../services/player/LevelUpPlayerService';
 import LoginPlayerService from '../services/player/LoginPlayerService';
 import UpdatePlayerService from '../services/player/UpdatePlayerService';
 
@@ -40,16 +42,23 @@ const updateController = new UpdatePlayerController(updateService);
 const loginService = new LoginPlayerService(playerRepository);
 const loginController = new LoginPlayerController(loginService);
 
+// level up
+const levelUpService = new LevelUpPlayerService(playerRepository);
+const levelUpController = new LevelUpPlayerController(levelUpService);
+
 router.post('/', createController.handle.bind(createController));
 router.get(
   '/email/:email',
   findByEmailController.handle.bind(findByEmailController),
 );
 router.put('/:email', updateController.handle.bind(updateController));
+
 router.delete(
   '/deactivate/',
   deactivateController.handle.bind(deactivateController),
 );
 router.post('/login/', loginController.handle.bind(loginController));
+
+router.post('/levelup/', levelUpController.handle.bind(levelUpController));
 
 export default router;
