@@ -59,6 +59,7 @@ class PlayerRepository
         name: true,
         coins: true,
         totalPoints: true,
+        currentXp: true,
         level: true,
         urlProfileImg: true,
         rankings: {
@@ -117,6 +118,7 @@ class PlayerRepository
         nickname: true,
         level: true,
         coins: true,
+        currentXp: true,
         totalPoints: true,
       },
     });
