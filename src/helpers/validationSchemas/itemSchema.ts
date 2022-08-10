@@ -7,4 +7,10 @@ const itemSchema = Joi.object({
   individualItemId: Joi.number().required(),
 });
 
-export { itemSchema };
+const buyItemSchema = Joi.object({
+  price: Joi.number().required(),
+  itemId: Joi.string().required(),
+  playerId: Joi.string().required(),
+});
+
+export { itemSchema, buyItemSchema };
