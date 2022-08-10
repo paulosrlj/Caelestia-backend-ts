@@ -16,4 +16,13 @@ const playerAchievementSchema = Joi.object({
   achievementId: Joi.string().required(),
 });
 
-export { achievementSchema, playerAchievementSchema };
+const equipPlayerAchievementSchema = Joi.object({
+  playerId: Joi.string().required(),
+  achievementId: Joi.string().required(),
+});
+
+export {
+  achievementSchema,
+  playerAchievementSchema,
+  equipPlayerAchievementSchema,
+};

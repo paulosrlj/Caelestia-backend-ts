@@ -2,10 +2,12 @@ import { Router } from 'express';
 import prisma from '../config/prismaClient';
 import CreateAchievementController from '../controllers/achievement/CreateAchievementController';
 import CreatePlayerAchievementController from '../controllers/achievement/CreatePlayerAchievementController';
+import EquipAchievement from '../controllers/achievement/EquipAchievementController';
 import AchievementRepository from '../repositories/Achievement/AchievementRepository';
 import ModuleRepository from '../repositories/Module/ModuleRepository';
 import CreateAchievementService from '../services/achievement/CreateAchievementService';
 import CreatePlayerAchievementService from '../services/achievement/CreatePlayerAchievementService';
+import EquipAchievementService from '../services/achievement/EquipAchievementService';
 import FindAchievementById from '../services/achievement/FindAchievementById';
 
 require('express-async-errors');
@@ -36,12 +38,20 @@ const createPlayerAchievementController = new CreatePlayerAchievementController(
   createPlayerAchievementService,
 );
 
+// equip achievement
+const equipAchievement = new EquipAchievementService(achievementRepository);
+const equipAchievementController = new EquipAchievement(equipAchievement);
+
 router.post('/', achievementController.handle.bind(achievementController));
 router.post(
   '/player-achievements',
   createPlayerAchievementController.handle.bind(
     createPlayerAchievementController,
   ),
+);
+router.post(
+  '/equip-achievement',
+  equipAchievementController.handle.bind(equipAchievementController),
 );
 
 export default router;
