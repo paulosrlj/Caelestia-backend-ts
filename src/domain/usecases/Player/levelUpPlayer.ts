@@ -1,5 +1,11 @@
 import { Player } from '../../entities/Player';
 
+export interface LevelUpPlayerModel {
+  email: string;
+  xpEarned: number;
+  coinsEarned: number;
+}
+
 export interface ILevelUpPlayer {
-  levelUpPlayer(email: string): Promise<Player>;
+  levelUpPlayer(levelUpModel: LevelUpPlayerModel): Promise<Player>;
 }
