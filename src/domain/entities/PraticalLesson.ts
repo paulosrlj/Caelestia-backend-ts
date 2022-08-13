@@ -2,6 +2,7 @@ export interface PraticalLesson {
   id: string;
   lessonName: string;
   xpEarned: number;
+  coinsEarned: number;
   description: string;
   alternative1: string;
   alternative2: string;

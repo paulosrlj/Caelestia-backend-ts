@@ -1,7 +1,14 @@
-import { PrismaClient, Prisma, TheoricLesson } from '@prisma/client';
+import {
+  PrismaClient,
+  Prisma,
+  TheoricLesson,
+  TheoricLessonsFinished,
+} from '@prisma/client';
+import { CompleteLessonModel } from '../../domain/usecases/PraticalLesson/complete-lesson';
 import { CreateTheoricLessonModel } from '../../domain/usecases/TheoricLesson/create';
 import { UpdateTheoricLessonModel } from '../../domain/usecases/TheoricLesson/update';
 import NotFound from '../../exceptions/NotFound';
+import { ICompleteTheoricLessonRepository } from './interfaces/ICompleteTheoricLesson';
 import { ICreateTheoricLessonRepository } from './interfaces/ICreateTheoricLesson';
 import { IDeleteTheoricLessonRepository } from './interfaces/IDeleteTheoricLesson';
 import { IUpdateTheoricLessonRepository } from './interfaces/IUpdateTheoricLesson';
@@ -10,7 +17,8 @@ class TheoricLessonRepository
   implements
     ICreateTheoricLessonRepository,
     IUpdateTheoricLessonRepository,
-    IDeleteTheoricLessonRepository
+    IDeleteTheoricLessonRepository,
+    ICompleteTheoricLessonRepository
 {
   private prismaClient;
 
@@ -27,6 +35,11 @@ class TheoricLessonRepository
   async create(
     theoricLesson: CreateTheoricLessonModel,
   ): Promise<TheoricLesson> {
+    const module = await this.prismaClient.module.findFirst({
+      where: { id: theoricLesson.moduleId },
+    });
+    if (!module) throw new NotFound('O módulo para esta lição não existe');
+
     return this.prismaClient.theoricLesson.create({
       data: theoricLesson,
     });
@@ -60,6 +73,32 @@ class TheoricLessonRepository
     }
 
     await this.prismaClient.theoricLesson.delete({ where: { id } });
+  }
+
+  async complete({
+    lessonId,
+    playerId,
+  }: CompleteLessonModel): Promise<TheoricLessonsFinished> {
+    const tl = await this.prismaClient.theoricLesson.findFirst({
+      where: { id: lessonId },
+    });
+
+    if (!tl) throw new NotFound('A lição teórica não existe');
+
+    const player = await this.prismaClient.player.findFirst({
+      where: { id: playerId },
+    });
+    if (!player) throw new NotFound('O jogador não existe');
+
+    // Atualizar as moedas do jogador
+    await this.prismaClient.player.update({
+      where: { id: player.id },
+      data: { coins: player.coins + tl.coinsEarned },
+    });
+
+    return this.prismaClient.theoricLessonsFinished.create({
+      data: { playerId, theoricLessonId: lessonId },
+    });
   }
 }
 

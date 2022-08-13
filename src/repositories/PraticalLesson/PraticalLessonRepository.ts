@@ -95,6 +95,12 @@ class PraticalLessonRepository
     });
     if (!player) throw new NotFound('O jogador não existe');
 
+    // Atualizar as moedas do jogador
+    await this.prismaClient.player.update({
+      where: { id: player.id },
+      data: { coins: player.coins + pl.coinsEarned },
+    });
+
     return this.prismaClient.praticalLessonsFinished.create({
       data: { playerId, praticalLessonId: lessonId },
     });
