@@ -1,4 +1,10 @@
-import { PraticalLesson, Prisma, PrismaClient } from '@prisma/client';
+import {
+  PraticalLesson,
+  PraticalLessonsFinished,
+  Prisma,
+  PrismaClient,
+} from '@prisma/client';
+import { CompleteLessonModel } from '../../domain/usecases/PraticalLesson/complete-lesson';
 import {
   CreatePraticalLessonModel,
   ICreatePraticalLesson,
@@ -8,13 +14,15 @@ import {
   UpdatePraticalLessonModel,
 } from '../../domain/usecases/PraticalLesson/update';
 import NotFound from '../../exceptions/NotFound';
+import { ICompletePraticalLessonRepository } from './interfaces/ICompletePraticalLesson';
 import { IDeletePraticalLessonRepository } from './interfaces/IDeletePraticalLesson';
 
 class PraticalLessonRepository
   implements
     ICreatePraticalLesson,
     IUpdatePraticalLesson,
-    IDeletePraticalLessonRepository
+    IDeletePraticalLessonRepository,
+    ICompletePraticalLessonRepository
 {
   private prismaClient;
 
@@ -28,7 +36,14 @@ class PraticalLessonRepository
     this.prismaClient = prismaClient;
   }
 
-  create(praticalLesson: CreatePraticalLessonModel): Promise<PraticalLesson> {
+  async create(
+    praticalLesson: CreatePraticalLessonModel,
+  ): Promise<PraticalLesson> {
+    const module = await this.prismaClient.module.findFirst({
+      where: { id: praticalLesson.moduleId },
+    });
+    if (!module) throw new NotFound('O módulo para esta lição não existe');
+
     return this.prismaClient.praticalLesson.create({
       data: praticalLesson,
     });
@@ -63,6 +78,26 @@ class PraticalLessonRepository
     }
 
     await this.prismaClient.praticalLesson.delete({ where: { id } });
+  }
+
+  async complete({
+    lessonId,
+    playerId,
+  }: CompleteLessonModel): Promise<PraticalLessonsFinished> {
+    const pl = await this.prismaClient.praticalLesson.findFirst({
+      where: { id: lessonId },
+    });
+
+    if (!pl) throw new NotFound('A lição prática não existe');
+
+    const player = await this.prismaClient.player.findFirst({
+      where: { id: playerId },
+    });
+    if (!player) throw new NotFound('O jogador não existe');
+
+    return this.prismaClient.praticalLessonsFinished.create({
+      data: { playerId, praticalLessonId: lessonId },
+    });
   }
 }
 

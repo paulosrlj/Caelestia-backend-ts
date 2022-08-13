@@ -3,6 +3,7 @@ import Joi from 'joi';
 const praticalLessonSchema = Joi.object({
   lessonName: Joi.string().required(),
   xpEarned: Joi.number().min(0).required(),
+  coinsEarned: Joi.number().min(0).required(),
   description: Joi.string().required(),
   alternative1: Joi.string().required(),
   alternative2: Joi.string().required(),
@@ -17,4 +18,9 @@ const praticalLessonSchema = Joi.object({
   moduleId: Joi.string().required(),
 });
 
-export default praticalLessonSchema;
+const completePlSchema = Joi.object({
+  lessonId: Joi.string().required(),
+  playerId: Joi.string().required(),
+});
+
+export { praticalLessonSchema, completePlSchema };

@@ -27,8 +27,11 @@ const globalExceptionHandler: ErrorRequestHandler = (err, req, res, next) => {
     return res.status(err.code).json({ error: err.message, code: err.code });
   }
 
-  // return res.status(500).json({ error: err.message, code: err.code });
-  return next(err);
+  console.error(err);
+  return res
+    .status(500)
+    .json({ error: 'Internal server error', code: err.code });
+  // return next(err);
 };
 
 export default globalExceptionHandler;

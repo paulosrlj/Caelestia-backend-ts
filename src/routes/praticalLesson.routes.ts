@@ -8,6 +8,8 @@ import UpdatePraticalLessonController from '../controllers/praticalLesson/Update
 import CreatePraticalLessonService from '../services/praticalLesson/CreatePraticalLessonService';
 import DeletePraticalLessonService from '../services/praticalLesson/DeletePraticalLessonService';
 import UpdatePraticalLessonService from '../services/praticalLesson/UpdatePraticalLessonService';
+import CompletePraticalLessonService from '../services/praticalLesson/CompletePraticalLessonService';
+import CompletePraticalLessonController from '../controllers/praticalLesson/CompletePraticalLessonController';
 
 require('express-async-errors');
 
@@ -27,8 +29,18 @@ const updateController = new UpdatePraticalLessonController(updateService);
 const deleteService = new DeletePraticalLessonService(repository);
 const deleteController = new DeletePraticalLessonController(deleteService);
 
+// complete PL
+const completePlService = new CompletePraticalLessonService(repository);
+const completePlController = new CompletePraticalLessonController(
+  completePlService,
+);
+
 router.post('/', createController.handle.bind(createController));
 router.put('/:id', updateController.handle.bind(updateController));
 router.delete('/:id', deleteController.handle.bind(deleteController));
+router.post(
+  '/completePl',
+  completePlController.handle.bind(completePlController),
+);
 
 export default router;

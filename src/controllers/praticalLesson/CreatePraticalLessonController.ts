@@ -4,7 +4,7 @@ import { ICreate } from '../interfaces/create';
 
 import { ICreatePraticalLesson } from '../../domain/usecases/PraticalLesson/create';
 import ValidationError from '../../exceptions/ValidationError';
-import praticalLessonSchema from '../../helpers/validationSchemas/praticalLessonSchema';
+import { praticalLessonSchema } from '../../helpers/validationSchemas/praticalLessonSchema';
 
 class CreatePraticalLessonController implements ICreate {
   private createService;
