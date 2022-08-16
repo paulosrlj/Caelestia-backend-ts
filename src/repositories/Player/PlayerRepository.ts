@@ -1,10 +1,18 @@
-import { Player as PrismaPlayer, Prisma, PrismaClient } from '@prisma/client';
+import {
+  Player as PrismaPlayer,
+  PlayerFriend,
+  Prisma,
+  PrismaClient,
+} from '@prisma/client';
 import { Player } from '../../domain/entities/Player';
+import { AddFriendModel } from '../../domain/usecases/Player/add-friend';
 import { CreatePlayerModel } from '../../domain/usecases/Player/create';
 import { UpdatePlayerModel } from '../../domain/usecases/Player/update';
 
 import AlreadyExists from '../../exceptions/AlreadyExists';
+import BadRequest from '../../exceptions/BadRequest';
 import NotFound from '../../exceptions/NotFound';
+import { IAddFriend } from './interfaces/IAddFriend';
 
 import { ICreatePlayer } from './interfaces/ICreatePlayer';
 import { IDeactivatePlayer } from './interfaces/IDeactivatePlayer';
@@ -20,7 +28,8 @@ class PlayerRepository
     IDeactivatePlayer,
     IUpdatePlayer,
     ILoginPlayer,
-    IFindByIdPlayer
+    IFindByIdPlayer,
+    IAddFriend
 {
   private prismaClient;
 
@@ -148,6 +157,36 @@ class PlayerRepository
     }
 
     return player;
+  }
+
+  async addFriend({
+    playerId,
+    friendId,
+  }: AddFriendModel): Promise<PlayerFriend> {
+    if (playerId === friendId)
+      throw new BadRequest('O jogador não pode ser amigo de si mesmo');
+
+    const player = await this.prismaClient.player.findFirst({
+      where: { id: playerId },
+    });
+
+    if (player === null) throw new NotFound(`O jogador não existe`);
+
+    const friend = await this.prismaClient.player.findFirst({
+      where: { id: friendId },
+    });
+
+    if (!friend) throw new NotFound(`O jogador não existe`);
+
+    const alreadyFriend = await this.prismaClient.playerFriend.findFirst({
+      where: { AND: [{ selfPlayerId: playerId }, { friendId }] },
+    });
+
+    if (alreadyFriend) throw new NotFound(`O jogador já tem esse amigo`);
+
+    return this.prismaClient.playerFriend.create({
+      data: { selfPlayerId: playerId, friendId },
+    });
   }
 }
 

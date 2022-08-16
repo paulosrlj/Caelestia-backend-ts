@@ -28,9 +28,15 @@ const levelUpPlayerSchema = Joi.object({
   coinsEarned: Joi.number().required(),
 });
 
+const createFriendSchema = Joi.object({
+  playerId: Joi.string().required(),
+  friendId: Joi.string().required(),
+});
+
 export {
   playerSchema,
   levelUpPlayerSchema,
   playerUpdateSchema,
   loginPlayerSchema,
+  createFriendSchema,
 };

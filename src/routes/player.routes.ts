@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import prisma from '../config/prismaClient';
+import CreateFriendController from '../controllers/player/CreateFriendController';
 import CreatePlayerController from '../controllers/player/CreatePlayerController';
 import DeactivatePlayerController from '../controllers/player/DeactivatePlayerController';
 import FindByEmailPlayerController from '../controllers/player/FindByEmailPlayerController';
@@ -7,6 +8,7 @@ import LevelUpPlayerController from '../controllers/player/LevelUpPlayerControll
 import LoginPlayerController from '../controllers/player/LoginPlayerController';
 import UpdatePlayerController from '../controllers/player/UpdatePlayerController';
 import PlayerRepository from '../repositories/Player/PlayerRepository';
+import CreateFriendService from '../services/player/CreateFriendService';
 import CreatePlayerService from '../services/player/CreatePlayerService';
 import DeactivatePlayerService from '../services/player/DeactivatePlayerService';
 import FindByEmailPlayerService from '../services/player/FindByEmailPlayerService';
@@ -46,6 +48,10 @@ const loginController = new LoginPlayerController(loginService);
 const levelUpService = new LevelUpPlayerService(playerRepository);
 const levelUpController = new LevelUpPlayerController(levelUpService);
 
+// add friend
+const addFriendService = new CreateFriendService(playerRepository);
+const addFriendController = new CreateFriendController(addFriendService);
+
 router.post('/', createController.handle.bind(createController));
 router.get(
   '/email/:email',
@@ -60,5 +66,10 @@ router.delete(
 router.post('/login/', loginController.handle.bind(loginController));
 
 router.post('/levelup/', levelUpController.handle.bind(levelUpController));
+
+router.post(
+  '/addfriend/',
+  addFriendController.handle.bind(addFriendController),
+);
 
 export default router;
