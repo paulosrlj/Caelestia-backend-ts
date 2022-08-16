@@ -12,8 +12,8 @@ const achievementSchema = Joi.object({
 });
 
 const playerAchievementSchema = Joi.object({
-  token: Joi.string().required(),
-  achievementId: Joi.string().required(),
+  moduleId: Joi.string().required(),
+  playerId: Joi.string().required(),
 });
 
 const equipPlayerAchievementSchema = Joi.object({

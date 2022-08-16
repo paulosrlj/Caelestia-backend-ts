@@ -7,6 +7,7 @@ import {
 import { CompleteLessonModel } from '../../domain/usecases/PraticalLesson/complete-lesson';
 import { CreateTheoricLessonModel } from '../../domain/usecases/TheoricLesson/create';
 import { UpdateTheoricLessonModel } from '../../domain/usecases/TheoricLesson/update';
+import BadRequest from '../../exceptions/BadRequest';
 import NotFound from '../../exceptions/NotFound';
 import { ICompleteTheoricLessonRepository } from './interfaces/ICompleteTheoricLesson';
 import { ICreateTheoricLessonRepository } from './interfaces/ICreateTheoricLesson';
@@ -79,6 +80,14 @@ class TheoricLessonRepository
     lessonId,
     playerId,
   }: CompleteLessonModel): Promise<TheoricLessonsFinished> {
+    const alreadyCompelted =
+      await this.prismaClient.theoricLessonsFinished.findFirst({
+        where: { AND: [{ theoricLessonId: lessonId }, { playerId }] },
+      });
+
+    if (alreadyCompelted)
+      throw new BadRequest('A lição téorica já está completa');
+
     const tl = await this.prismaClient.theoricLesson.findFirst({
       where: { id: lessonId },
     });

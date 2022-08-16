@@ -13,6 +13,7 @@ import {
   IUpdatePraticalLesson,
   UpdatePraticalLessonModel,
 } from '../../domain/usecases/PraticalLesson/update';
+import BadRequest from '../../exceptions/BadRequest';
 import NotFound from '../../exceptions/NotFound';
 import { ICompletePraticalLessonRepository } from './interfaces/ICompletePraticalLesson';
 import { IDeletePraticalLessonRepository } from './interfaces/IDeletePraticalLesson';
@@ -84,6 +85,14 @@ class PraticalLessonRepository
     lessonId,
     playerId,
   }: CompleteLessonModel): Promise<PraticalLessonsFinished> {
+    const alreadyCompelted =
+      await this.prismaClient.praticalLessonsFinished.findFirst({
+        where: { AND: [{ praticalLessonId: lessonId }, { playerId }] },
+      });
+
+    if (alreadyCompelted)
+      throw new BadRequest('A lição prática já está completa');
+
     const pl = await this.prismaClient.praticalLesson.findFirst({
       where: { id: lessonId },
     });

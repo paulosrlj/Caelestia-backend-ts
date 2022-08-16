@@ -1,9 +1,8 @@
 import { PlayerAchievements } from '@prisma/client';
 
 export interface playerAchievementModelRepository {
+  moduleId: string;
   playerId: string;
-  achievementId: string;
-  currentLevelUpPrice: number;
 }
 
 export interface ICreatePlayerAchievement {

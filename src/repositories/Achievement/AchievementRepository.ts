@@ -46,24 +46,83 @@ class AchievementRepository
     return this.prismaClient.achievement.create({ data: achievement });
   }
 
-  async createPlayerAchievement(
-    playerAchievement: playerAchievementModelRepository,
-  ): Promise<PlayerAchievements> {
-    const playerAchievementFound =
-      await this.prismaClient.playerAchievements.findFirst({
-        where: {
-          AND: [
-            { achievementId: playerAchievement.achievementId },
-            { playerId: playerAchievement.playerId },
-          ],
-        },
-      });
+  async createPlayerAchievement({
+    moduleId,
+    playerId,
+  }: playerAchievementModelRepository): Promise<PlayerAchievements> {
+    // verificar se o jogador existe
+    const player = await this.prismaClient.player.findFirst({
+      where: { id: playerId },
+    });
 
-    if (playerAchievementFound)
+    if (!player) throw new NotFound('Este usuário não existe');
+
+    // verificar se o módulo existe
+    const module = await this.prismaClient.module.findFirst({
+      where: { id: moduleId },
+      include: {
+        praticalLessons: { select: { id: true } },
+        theoricLessons: { select: { id: true } },
+      },
+    });
+
+    if (!module) throw new NotFound('Este módulo não existe');
+
+    // buscar a conquista deste módulo
+    const ac = await this.prismaClient.achievement.findFirst({
+      where: { moduleId },
+    });
+
+    if (!ac) throw new NotFound('Este conquista não existe');
+
+    // verificar se essa conqusita já não foi desbloqueada
+    const playerAc = await this.prismaClient.playerAchievements.findFirst({
+      where: {
+        AND: [{ achievementId: ac.id }, { playerId }],
+      },
+    });
+
+    if (playerAc)
       throw new AlreadyExists('Este usuário já desbloqueou esta conquista');
 
+    // verificar se todas as lições do módulo foram concluídas, em ordem para desbloquear a conquista
+    const theoricLessonsCompleted =
+      await this.prismaClient.theoricLessonsFinished.findMany({
+        where: { playerId },
+        include: { theoricLesson: { select: { moduleId: true } } },
+      });
+
+    const praticalLessonsCompleted =
+      await this.prismaClient.praticalLessonsFinished.findMany({
+        where: { playerId },
+        include: { praticalLesson: { select: { moduleId: true } } },
+      });
+
+    // filtrar apenas as lições desse módulo
+    const theoricLessonFilter = theoricLessonsCompleted.map(
+      t => t.theoricLesson.moduleId === moduleId,
+    );
+
+    const praticalLessonFilter = praticalLessonsCompleted.map(
+      t => t.praticalLesson.moduleId === moduleId,
+    );
+
+    const allLessonsCompleted = [
+      ...theoricLessonFilter,
+      ...praticalLessonFilter,
+    ];
+
+    const lessonsCompleted = allLessonsCompleted.length;
+    const totalLessons =
+      module.praticalLessons.length + module.theoricLessons.length;
+
+    if (!(lessonsCompleted === totalLessons)) {
+      throw new BadRequest('Ainda faltam lições para completar');
+    }
+
+    // desbloquear
     return this.prismaClient.playerAchievements.create({
-      data: playerAchievement,
+      data: { playerId, achievementId: ac.id },
     });
   }
 

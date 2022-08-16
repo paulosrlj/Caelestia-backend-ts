@@ -9,7 +9,6 @@ import ModuleRepository from '../repositories/Module/ModuleRepository';
 import CreateAchievementService from '../services/achievement/CreateAchievementService';
 import CreatePlayerAchievementService from '../services/achievement/CreatePlayerAchievementService';
 import EquipAchievementService from '../services/achievement/EquipAchievementService';
-import FindAchievementById from '../services/achievement/FindAchievementById';
 import LevelUpAchievementService from '../services/achievement/LevelUpAchievementService';
 
 require('express-async-errors');
@@ -28,13 +27,9 @@ const achievementController = new CreateAchievementController(
   achievementService,
 );
 
-// findById
-const findByIdService = new FindAchievementById(achievementRepository);
-
 // create player-achievement
 const createPlayerAchievementService = new CreatePlayerAchievementService(
   achievementRepository,
-  findByIdService,
 );
 const createPlayerAchievementController = new CreatePlayerAchievementController(
   createPlayerAchievementService,
