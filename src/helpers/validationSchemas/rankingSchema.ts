@@ -6,4 +6,9 @@ const rankingSchema = Joi.object({
   pointsToPromotion: Joi.number().required(),
 });
 
-export default rankingSchema;
+const assignRankSchema = Joi.object({
+  playerId: Joi.string().required(),
+  rankingIndividualId: Joi.number().required(),
+});
+
+export { assignRankSchema, rankingSchema };

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { ICreateRanking } from '../../domain/usecases/Ranking/create-ranking';
 import ValidationError from '../../exceptions/ValidationError';
-import rankingSchema from '../../helpers/validationSchemas/rankingSchema';
+import { rankingSchema } from '../../helpers/validationSchemas/rankingSchema';
 import { ICreate } from '../interfaces/create';
 
 class CreateRankingController implements ICreate {

@@ -1,4 +1,4 @@
-import { Ranking } from '@prisma/client';
+import { PlayerRanking } from '@prisma/client';
 
 export interface AssignRankingModel {
   playerId: string;
@@ -6,5 +6,5 @@ export interface AssignRankingModel {
 }
 
 export interface IAssignRanking {
-  assignRanking(assignRankingModel: AssignRankingModel): Promise<Ranking>;
+  assignRanking(assignRankingModel: AssignRankingModel): Promise<PlayerRanking>;
 }

@@ -32,13 +32,19 @@ class RankingRepository implements IAssignRanking, ICreateRanking {
     if (!player) throw new NotFound('O jogador não existe');
 
     const rankingTitle =
-      rankInfo.titles[Math.floor(Math.random() * rankInfo.titles.length + 1)];
+      rankInfo.titles[Math.floor(Math.random() * rankInfo.titles.length)];
 
     const ranking = await this.prismaClient.ranking.findFirst({
       where: { rankingName: rankInfo.name },
     });
 
     if (!ranking) throw new NotFound('O ranking não existe');
+
+    const alreadyExists = await this.prismaClient.playerRanking.findFirst({
+      where: { AND: [{ playerId }, { rankingId: ranking.id }] },
+    });
+
+    if (alreadyExists) throw new AlreadyExists('O ranking já existe');
 
     return this.prismaClient.playerRanking.create({
       data: { rankingTitle, rankingId: ranking.id, playerId },
