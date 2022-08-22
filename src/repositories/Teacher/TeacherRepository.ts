@@ -1,12 +1,19 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import { Classroom } from '../../domain/entities/Classroom';
 import { Teacher } from '../../domain/entities/Teacher';
 import { createTeacherModel } from '../../domain/usecases/Teacher/create-teacher';
 import AlreadyExists from '../../exceptions/AlreadyExists';
 import NotFound from '../../exceptions/NotFound';
+import {
+  createClassroomRepoModel,
+  ICreateClassroom,
+} from './interfaces/ICreateClassroom';
 import { ICreateTeacher } from './interfaces/ICreateTeacher';
 import { ILoginTeacher } from './interfaces/ILoginTeacher';
 
-class TeacherRepository implements ICreateTeacher, ILoginTeacher {
+class TeacherRepository
+  implements ICreateTeacher, ILoginTeacher, ICreateClassroom
+{
   private prismaClient;
 
   constructor(
@@ -44,6 +51,12 @@ class TeacherRepository implements ICreateTeacher, ILoginTeacher {
     }
 
     return teacher;
+  }
+
+  async createClassroom(
+    classroomModel: createClassroomRepoModel,
+  ): Promise<Classroom> {
+    return this.prismaClient.classroom.create({ data: classroomModel });
   }
 }
 
