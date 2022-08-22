@@ -13,4 +13,9 @@ const teacherSchema = Joi.object({
   institution: Joi.string().required(),
 });
 
-export { teacherSchema };
+const loginTeacherSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().min(6).max(30).required(),
+});
+
+export { teacherSchema, loginTeacherSchema };

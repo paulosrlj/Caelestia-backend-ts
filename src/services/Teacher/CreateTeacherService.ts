@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { Teacher } from '../../domain/entities/Teacher';
 import {
   createTeacherModel,
@@ -13,6 +14,10 @@ class CreateTeacherService implements ICreateTeacher {
   }
 
   async create(teacherModel: createTeacherModel): Promise<Teacher> {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(teacherModel.password, salt);
+    teacherModel.password = hashedPassword;
+
     return this.createTeacher.create(teacherModel);
   }
 }
