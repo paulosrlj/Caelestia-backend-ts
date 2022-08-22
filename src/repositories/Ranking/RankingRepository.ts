@@ -3,6 +3,7 @@ import { AssignRankingModel } from '../../domain/usecases/Ranking/assignRanking'
 import { CreateRankingModel } from '../../domain/usecases/Ranking/create-ranking';
 import { rankingInfo } from '../../domain/usecases/Ranking/ranking-info';
 import AlreadyExists from '../../exceptions/AlreadyExists';
+import BadRequest from '../../exceptions/BadRequest';
 import NotFound from '../../exceptions/NotFound';
 import { IAssignRanking } from './interfaces/IAssignRanking';
 import { ICreateRanking } from './interfaces/ICreateRanking';
@@ -24,6 +25,12 @@ class RankingRepository implements IAssignRanking, ICreateRanking {
     playerId,
     rankingIndividualId,
   }: AssignRankingModel): Promise<PlayerRanking> {
+    if (
+      rankingIndividualId < 0 ||
+      rankingIndividualId > rankingInfo.length - 1
+    ) {
+      throw new BadRequest('Id de ranking inválido');
+    }
     const rankInfo = rankingInfo[rankingIndividualId];
 
     const player = await this.prismaClient.player.findFirst({
@@ -31,6 +38,7 @@ class RankingRepository implements IAssignRanking, ICreateRanking {
     });
     if (!player) throw new NotFound('O jogador não existe');
 
+    // Choose a random ranking title
     const rankingTitle =
       rankInfo.titles[Math.floor(Math.random() * rankInfo.titles.length)];
 

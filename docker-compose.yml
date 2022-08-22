@@ -1,15 +1,4 @@
 services:
-  postgres-integration-tests:
-    image: postgres
-    ports:
-      - "5434:5432"
-    environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: "integration-tests"
-    networks:
-      - postgres-compose-network
-
   postgres_dev:
     image: postgres
     ports:
@@ -18,16 +7,6 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "caelestia-dev"
-    networks:
-      - postgres-compose-network
-
-  pgadmin_main:
-    image: dpage/pgadmin4
-    ports:
-      - "15432:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "paulo@gmail.com"
-      PGADMIN_DEFAULT_PASSWORD: "postgres"
     networks:
       - postgres-compose-network
 

@@ -1,6 +1,7 @@
 import {
   Player as PrismaPlayer,
   PlayerFriend,
+  PlayerRanking,
   Prisma,
   PrismaClient,
 } from '@prisma/client';
@@ -8,6 +9,8 @@ import { Player } from '../../domain/entities/Player';
 import { AddFriendModel } from '../../domain/usecases/Player/add-friend';
 import { CreatePlayerModel } from '../../domain/usecases/Player/create';
 import { UpdatePlayerModel } from '../../domain/usecases/Player/update';
+import { AssignRankingModel } from '../../domain/usecases/Ranking/assignRanking';
+import { rankingInfo } from '../../domain/usecases/Ranking/ranking-info';
 
 import AlreadyExists from '../../exceptions/AlreadyExists';
 import BadRequest from '../../exceptions/BadRequest';
@@ -61,7 +64,19 @@ class PlayerRepository
       );
     }
 
-    return this.prismaClient.player.create({ data: player });
+    const persistedPlayer = await this.prismaClient.player.create({
+      data: player,
+    });
+
+    // assign base ranking to newly created player
+    // Choose a random ranking title
+
+    await this.assignRanking({
+      playerId: persistedPlayer.id,
+      rankingIndividualId: 0,
+    });
+
+    return persistedPlayer;
   }
 
   async findByEmail(email: string): Promise<Player> {
@@ -186,6 +201,44 @@ class PlayerRepository
 
     return this.prismaClient.playerFriend.create({
       data: { selfPlayerId: playerId, friendId },
+    });
+  }
+
+  async assignRanking({
+    playerId,
+    rankingIndividualId,
+  }: AssignRankingModel): Promise<PlayerRanking> {
+    if (
+      rankingIndividualId < 0 ||
+      rankingIndividualId > rankingInfo.length - 1
+    ) {
+      throw new BadRequest('Id de ranking inválido');
+    }
+    const rankInfo = rankingInfo[rankingIndividualId];
+
+    const player = await this.prismaClient.player.findFirst({
+      where: { id: playerId },
+    });
+    if (!player) throw new NotFound('O jogador não existe');
+
+    // Choose a random ranking title
+    const rankingTitle =
+      rankInfo.titles[Math.floor(Math.random() * rankInfo.titles.length)];
+
+    const ranking = await this.prismaClient.ranking.findFirst({
+      where: { rankingName: rankInfo.name },
+    });
+
+    if (!ranking) throw new NotFound('O ranking não existe');
+
+    const alreadyExists = await this.prismaClient.playerRanking.findFirst({
+      where: { AND: [{ playerId }, { rankingId: ranking.id }] },
+    });
+
+    if (alreadyExists) throw new AlreadyExists('O ranking já existe');
+
+    return this.prismaClient.playerRanking.create({
+      data: { rankingTitle, rankingId: ranking.id, playerId },
     });
   }
 }
