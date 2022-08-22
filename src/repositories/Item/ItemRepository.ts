@@ -60,6 +60,7 @@ class ItemRepository implements ICreateItem, IBuyItem, IFindByIdItem {
       data: { coins: player.coins - buyItemModel.price },
     });
 
+    // Veriicar se o item já existe no jogador, e atualizar a quantidade
     if (alreadyExists) {
       return this.prismaClient.playerItem.update({
         where: {
@@ -72,6 +73,7 @@ class ItemRepository implements ICreateItem, IBuyItem, IFindByIdItem {
       });
     }
 
+    // Caso não exista, crie
     return this.prismaClient.playerItem.create({
       data: {
         itemId: buyItemModel.itemId,

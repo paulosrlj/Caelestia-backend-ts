@@ -87,7 +87,7 @@ model Player {
   coins           Int     @default(0)
   urlProfileImg   String?
   isProfileActive Boolean @default(true)
-  currentXp Int @default(0)
+  currentXp       Int     @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -110,6 +110,10 @@ model Player {
 
   // Player and achievements
   achievements PlayerAchievements[]
+
+  documents Document[]
+
+  classrooms ClassroomPlayers[]
 }
 
 model PlayerFriend {
@@ -215,4 +219,71 @@ model PlayerAchievements {
   isEquiped           Boolean @default(false)
 
   @@id([playerId, achievementId])
+}
+
+model Teacher {
+  id          String @id @default(uuid())
+  email       String @unique
+  password    String
+  name        String
+  institution String
+  cpf         String @unique
+  urlProfileImg   String?
+
+  classrooms Classroom[]
+  activities Activity[]
+  documents Document[]
+}
+
+model Classroom {
+  id          String @id @default(uuid())
+  name String
+  codClass String
+
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  teacherId String
+
+  activities Activity[]
+
+  players ClassroomPlayers[]
+}
+
+model Activity {
+  id          String @id @default(uuid())
+  name String
+  description String
+  dueDate DateTime
+
+  classroom Classroom @relation(fields: [classroomId], references: [id])
+  classroomId String
+
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  teacherId String
+
+  documents Document[]
+}
+
+model Document {
+  id          String @id @default(uuid())
+  name String
+  urlDocument String
+
+  activity Activity @relation(fields: [activityId], references: [id])
+  activityId String
+
+  teacher Teacher? @relation(fields: [teacherId], references: [id])
+  teacherId String?
+
+  player Player? @relation(fields: [playerId], references: [id])
+  playerId String?
+}
+
+model ClassroomPlayers {
+  player   Player @relation(fields: [playerId], references: [id])
+  playerId String
+
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
+  classroomId String
+
+  @@id([playerId, classroomId])
 }

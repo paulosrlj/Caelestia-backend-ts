@@ -16,6 +16,7 @@ import playerRoutes from './routes/player.routes';
 import achievementRoutes from './routes/achievement.routes';
 import itemRoutes from './routes/item.routes';
 import rankingRoutes from './routes/ranking.routes';
+import teacherRoutes from './routes/teacher.routes';
 
 import prisma from './config/prismaClient';
 
@@ -171,6 +172,7 @@ class App {
     this.app.use('/achievements', achievementRoutes);
     this.app.use('/items', itemRoutes);
     this.app.use('/rankings', rankingRoutes);
+    this.app.use('/teachers', teacherRoutes);
   }
 
   middlewares() {
