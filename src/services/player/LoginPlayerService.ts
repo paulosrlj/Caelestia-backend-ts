@@ -15,7 +15,7 @@ class LoginPlayerService implements ILoginPlayer {
     this.loginPlayerRepository = loginPlayerRepository;
   }
 
-  async loginPlayer(player: LoginPlayerModel): Promise<string> {
+  async loginPlayer(player: LoginPlayerModel): Promise<any> {
     const playerFound = await this.loginPlayerRepository.loginPlayer(
       player.email,
     );
@@ -36,7 +36,7 @@ class LoginPlayerService implements ILoginPlayer {
       },
     );
 
-    return token;
+    return { token, player: playerFound };
   }
 }
 

@@ -29,7 +29,15 @@ class ModuleRepository
     this.prismaClient = prismaClient;
   }
 
-  create(module: CreateModuleModel): Promise<Module> {
+  async create(module: CreateModuleModel): Promise<Module> {
+    const ac = await this.prismaClient.module.findFirst({
+      where: { achievementId: module.achievementId },
+    });
+
+    if (ac) {
+      throw new NotFound('A conquista informada já está associada a um módulo');
+    }
+
     return this.prismaClient.module.create({ data: module });
   }
 

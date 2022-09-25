@@ -16,7 +16,8 @@ model Module {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  achievement Achievement?
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  achievementId String      @unique
 
   theoricLessons  TheoricLesson[]
   praticalLessons PraticalLesson[]
@@ -83,6 +84,7 @@ model Player {
   name            String
   nickname        String  @unique
   totalPoints     Int     @default(0)
+  rankingPoints   Int     @default(0)
   level           Int     @default(1)
   coins           Int     @default(0)
   urlProfileImg   String?
@@ -183,7 +185,6 @@ model PlayerRanking {
 
   isActive     Boolean @default(false)
   rankingTitle String
-  weeklyPoints Int     @default(0)
 
   @@id([playerId, rankingId])
 }
@@ -198,8 +199,7 @@ model Achievement {
   achievementBadge           String
   levelUpPrice               Int
 
-  module   Module @relation(fields: [moduleId], references: [id])
-  moduleId String @unique
+  module Module?
 
   players PlayerAchievements[]
 
@@ -222,25 +222,25 @@ model PlayerAchievements {
 }
 
 model Teacher {
-  id          String @id @default(uuid())
-  email       String @unique
-  password    String
-  name        String
-  institution String
-  cpf         String @unique
-  urlProfileImg   String?
+  id            String  @id @default(uuid())
+  email         String  @unique
+  password      String
+  name          String
+  institution   String
+  cpf           String  @unique
+  urlProfileImg String?
 
   classrooms Classroom[]
   activities Activity[]
-  documents Document[]
+  documents  Document[]
 }
 
 model Classroom {
-  id          String @id @default(uuid())
-  name String
+  id       String @id @default(uuid())
+  name     String
   codClass String
 
-  teacher Teacher @relation(fields: [teacherId], references: [id])
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
   teacherId String
 
   activities Activity[]
@@ -249,15 +249,15 @@ model Classroom {
 }
 
 model Activity {
-  id          String @id @default(uuid())
-  name String
+  id          String   @id @default(uuid())
+  name        String
   description String
-  dueDate DateTime
+  dueDate     DateTime
 
-  classroom Classroom @relation(fields: [classroomId], references: [id])
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
   classroomId String
 
-  teacher Teacher @relation(fields: [teacherId], references: [id])
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
   teacherId String
 
   documents Document[]
@@ -265,16 +265,16 @@ model Activity {
 
 model Document {
   id          String @id @default(uuid())
-  name String
+  name        String
   urlDocument String
 
-  activity Activity @relation(fields: [activityId], references: [id])
+  activity   Activity @relation(fields: [activityId], references: [id])
   activityId String
 
-  teacher Teacher? @relation(fields: [teacherId], references: [id])
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
   teacherId String?
 
-  player Player? @relation(fields: [playerId], references: [id])
+  player   Player? @relation(fields: [playerId], references: [id])
   playerId String?
 }
 
@@ -286,4 +286,10 @@ model ClassroomPlayers {
   classroomId String
 
   @@id([playerId, classroomId])
+}
+
+model Admin {
+  id          String @id @default(uuid())
+  email           String  @unique
+  password        String
 }

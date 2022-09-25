@@ -11,4 +11,8 @@ const assignRankSchema = Joi.object({
   rankingIndividualId: Joi.number().required(),
 });
 
-export { assignRankSchema, rankingSchema };
+const getAllPlayersSchema = Joi.object({
+  playerEmail: Joi.string().required(),
+});
+
+export { assignRankSchema, rankingSchema, getAllPlayersSchema };

@@ -8,7 +8,6 @@ const achievementSchema = Joi.object({
   bonusType: Joi.string().required(),
   achievementBadge: Joi.string().uri().required(),
   levelUpPrice: Joi.number().required(),
-  moduleId: Joi.string().required(),
 });
 
 const playerAchievementSchema = Joi.object({

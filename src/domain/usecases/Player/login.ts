@@ -4,5 +4,5 @@ export interface LoginPlayerModel {
 }
 
 export interface ILoginPlayer {
-  loginPlayer(player: LoginPlayerModel): Promise<string>;
+  loginPlayer(player: LoginPlayerModel): Promise<any>;
 }

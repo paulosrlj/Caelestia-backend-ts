@@ -182,11 +182,27 @@ class App {
     this.app.use(cors(corsOptions));
   }
 
+  async createAdmin() {
+    const admin = await prisma.admin.findFirst({
+      where: { email: process.env.ADMIN_EMAIL! },
+    });
+
+    if (!admin) {
+      prisma.admin.create({
+        data: {
+          email: process.env.ADMIN_EMAIL!,
+          password: process.env.ADMIN_PASSWORD!,
+        },
+      });
+    }
+  }
+
   constructor() {
     this.app = express();
     this.middlewares();
     this.routes();
     this.app.use(globalExceptionHandler);
+    this.createAdmin();
   }
 }
 

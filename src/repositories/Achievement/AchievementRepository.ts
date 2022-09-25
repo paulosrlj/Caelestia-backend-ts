@@ -37,7 +37,7 @@ class AchievementRepository
 
   async create(achievement: CreateAchievementModel): Promise<Achievement> {
     const achievementFound = await this.prismaClient.achievement.findFirst({
-      where: { moduleId: achievement.moduleId },
+      where: { achievementName: achievement.achievementName },
     });
     if (achievementFound)
       throw new AlreadyExists(
@@ -66,12 +66,19 @@ class AchievementRepository
       },
     });
 
+    console.log(module);
+
     if (!module) throw new NotFound('Este módulo não existe');
 
-    // buscar a conquista deste módulo
+    // buscar a conquista
     const ac = await this.prismaClient.achievement.findFirst({
-      where: { moduleId },
+      where: { id: module.achievementId },
+      include: {
+        module: { select: { id: true } },
+      },
     });
+
+    console.log(ac);
 
     if (!ac) throw new NotFound('Este conquista não existe');
 
@@ -99,13 +106,16 @@ class AchievementRepository
       });
 
     // filtrar apenas as lições desse módulo
-    const theoricLessonFilter = theoricLessonsCompleted.map(
-      t => t.theoricLesson.moduleId === moduleId,
+    const theoricLessonFilter = theoricLessonsCompleted.filter(
+      t => t.theoricLesson.moduleId === ac.module?.id,
     );
 
-    const praticalLessonFilter = praticalLessonsCompleted.map(
-      t => t.praticalLesson.moduleId === moduleId,
+    const praticalLessonFilter = praticalLessonsCompleted.filter(
+      t => t.praticalLesson.moduleId === ac.module?.id,
     );
+
+    console.log(theoricLessonFilter);
+    console.log(praticalLessonFilter);
 
     const allLessonsCompleted = [
       ...theoricLessonFilter,
@@ -115,6 +125,9 @@ class AchievementRepository
     const lessonsCompleted = allLessonsCompleted.length;
     const totalLessons =
       module.praticalLessons.length + module.theoricLessons.length;
+
+    console.log(allLessonsCompleted);
+    console.log(totalLessons);
 
     if (!(lessonsCompleted === totalLessons)) {
       throw new BadRequest('Ainda faltam lições para completar');
@@ -196,16 +209,19 @@ class AchievementRepository
       where: { achievementId, playerId },
     });
     if (!playerAc)
-      throw new NotFound('Não exise uma conquista associada com esse jogador');
+      throw new NotFound('Não existe uma conquista associada com esse jogador');
 
-    if (playerAc.currentLevelUpPrice! > player.coins)
+    if (playerAc.currentLevelUpPrice! + ac.levelUpPrice! > player.coins)
       throw new BadRequest(
         'As moedas são insuficientes para melhorar a conquista',
       );
 
     await this.prismaClient.player.update({
       where: { id: playerId },
-      data: { coins: player.coins - playerAc.currentLevelUpPrice },
+      data: {
+        coins:
+          player.coins - (playerAc.currentLevelUpPrice! + ac.levelUpPrice!),
+      },
     });
 
     return this.prismaClient.playerAchievements.update({

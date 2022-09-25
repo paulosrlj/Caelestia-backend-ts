@@ -19,7 +19,12 @@ class LoginTeacherController implements IFindById {
     }
     const token = await this.loginTeacher.loginTeacher(req.body);
 
-    return res.status(200).json({ token });
+    return res.status(200).json({
+      email: req.body.email,
+      password: req.body.password,
+      token,
+      userType: 'teacher',
+    });
   }
 }
 

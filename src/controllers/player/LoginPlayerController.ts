@@ -19,7 +19,13 @@ class LoginPlayerController implements IFindById {
     }
     const token = await this.loginPlayer.loginPlayer(req.body);
 
-    return res.status(200).json({ token });
+    return res.status(200).json({
+      token: token.token,
+      email: req.body.email,
+      password: req.body.password,
+      id: token.player.id,
+      userType: 'player',
+    });
   }
 }
 

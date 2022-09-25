@@ -65,11 +65,6 @@ const rankingInfo = [
     ],
   },
   {
-    name: 'Quasar',
-    pts: 7500,
-    titles: ['Twin', 'Cruz de Einstein', 'Cloverleaf', '3C 9'],
-  },
-  {
     name: 'Buraco negro',
     pts: 10000,
     titles: ['Gargantua', 'Cygnus X-1', 'Sagittarius A*', 'Messier 87'],

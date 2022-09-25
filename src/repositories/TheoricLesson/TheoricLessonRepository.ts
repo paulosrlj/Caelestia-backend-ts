@@ -12,6 +12,7 @@ import NotFound from '../../exceptions/NotFound';
 import { ICompleteTheoricLessonRepository } from './interfaces/ICompleteTheoricLesson';
 import { ICreateTheoricLessonRepository } from './interfaces/ICreateTheoricLesson';
 import { IDeleteTheoricLessonRepository } from './interfaces/IDeleteTheoricLesson';
+import { IGetOneTheoricLessonRepository } from './interfaces/IGetOneTheoricLesson';
 import { IUpdateTheoricLessonRepository } from './interfaces/IUpdateTheoricLesson';
 
 class TheoricLessonRepository
@@ -19,7 +20,8 @@ class TheoricLessonRepository
     ICreateTheoricLessonRepository,
     IUpdateTheoricLessonRepository,
     IDeleteTheoricLessonRepository,
-    ICompleteTheoricLessonRepository
+    ICompleteTheoricLessonRepository,
+    IGetOneTheoricLessonRepository
 {
   private prismaClient;
 
@@ -44,6 +46,18 @@ class TheoricLessonRepository
     return this.prismaClient.theoricLesson.create({
       data: theoricLesson,
     });
+  }
+
+  async getOne(id: string): Promise<TheoricLesson> {
+    const theoricLesson = await this.prismaClient.theoricLesson.findFirst({
+      where: { id },
+    });
+
+    if (!theoricLesson) {
+      throw new NotFound(`A lição teórica de id ${id} não existe`);
+    }
+
+    return theoricLesson;
   }
 
   async update(

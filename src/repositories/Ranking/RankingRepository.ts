@@ -1,14 +1,18 @@
 import { PlayerRanking, Prisma, PrismaClient, Ranking } from '@prisma/client';
 import { AssignRankingModel } from '../../domain/usecases/Ranking/assignRanking';
 import { CreateRankingModel } from '../../domain/usecases/Ranking/create-ranking';
+import { GetAllPlayersOfRankingModel } from '../../domain/usecases/Ranking/getAllPlayersOfRanking';
 import { rankingInfo } from '../../domain/usecases/Ranking/ranking-info';
 import AlreadyExists from '../../exceptions/AlreadyExists';
 import BadRequest from '../../exceptions/BadRequest';
 import NotFound from '../../exceptions/NotFound';
 import { IAssignRanking } from './interfaces/IAssignRanking';
 import { ICreateRanking } from './interfaces/ICreateRanking';
+import { IGetAllPlayersOfRank } from './interfaces/IGetAllPlayersOfRank';
 
-class RankingRepository implements IAssignRanking, ICreateRanking {
+class RankingRepository
+  implements IAssignRanking, ICreateRanking, IGetAllPlayersOfRank
+{
   private prismaClient;
 
   constructor(
@@ -19,6 +23,26 @@ class RankingRepository implements IAssignRanking, ICreateRanking {
     >,
   ) {
     this.prismaClient = prismaClient;
+  }
+
+  async getAllPlayersOfRank({
+    playerEmail,
+  }: GetAllPlayersOfRankingModel): Promise<PlayerRanking[]> {
+    const player = await this.prismaClient.player.findFirst({
+      where: { email: playerEmail },
+    });
+    if (!player) throw new AlreadyExists('O jogador não existe');
+
+    const playerRank = await this.prismaClient.playerRanking.findFirst({
+      where: { playerId: player.id },
+    });
+
+    const players = await this.prismaClient.playerRanking.findMany({
+      where: { rankingTitle: playerRank?.rankingTitle },
+      include: { player: true, ranking: true },
+    });
+
+    return players;
   }
 
   async assignRanking({

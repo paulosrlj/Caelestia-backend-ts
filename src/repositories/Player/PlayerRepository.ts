@@ -80,11 +80,20 @@ class PlayerRepository
   }
 
   async findByEmail(email: string): Promise<Player> {
+    const today = new Date();
+    const fiveDaysAgo = new Date();
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+
     const player = await this.prismaClient.player.findFirst({
       where: { email },
       select: {
         _count: {
-          select: { theoricLessons: true, praticalLessons: true, friend: true },
+          select: {
+            theoricLessons: true,
+            praticalLessons: true,
+            friend: true,
+            achievements: true,
+          },
         },
         id: true,
         email: true,
@@ -92,6 +101,7 @@ class PlayerRepository
         name: true,
         coins: true,
         totalPoints: true,
+        rankingPoints: true,
         currentXp: true,
         level: true,
         urlProfileImg: true,
@@ -106,7 +116,50 @@ class PlayerRepository
               },
             },
             rankingTitle: true,
+            isActive: true,
           },
+          orderBy: {
+            ranking: { createdAt: 'desc' },
+          },
+          take: 1,
+        },
+        achievements: {
+          select: {
+            achievement: {
+              select: {
+                id: true,
+                createdAt: true,
+                description: true,
+                achievementName: true,
+                bonusPercentage: true,
+                bonusType: true,
+                achievementBadge: true,
+                module: { select: { name: true } },
+                levelUpPrice: true,
+              },
+            },
+            isEquiped: true,
+            currentLevelUpPrice: true,
+            achievementLevel: true,
+          },
+        },
+        praticalLessons: {
+          where: {
+            completionDate: {
+              lte: today.toISOString(),
+              gte: fiveDaysAgo.toISOString(),
+            },
+          },
+          select: { completionDate: true },
+        },
+        theoricLessons: {
+          where: {
+            completionDate: {
+              lte: today.toISOString(),
+              gte: fiveDaysAgo.toISOString(),
+            },
+          },
+          select: { completionDate: true },
         },
       },
     });
@@ -238,7 +291,7 @@ class PlayerRepository
     if (alreadyExists) throw new AlreadyExists('O ranking já existe');
 
     return this.prismaClient.playerRanking.create({
-      data: { rankingTitle, rankingId: ranking.id, playerId },
+      data: { rankingTitle, rankingId: ranking.id, playerId, isActive: true },
     });
   }
 }
